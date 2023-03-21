@@ -1,4 +1,11 @@
 public class Moderator extends Admin{
-    int rang;
-    Stats[] stat;
+    private int rang;
+
+    public int getRang() {
+        return rang;
+    }
+
+    public void setRang(int rang) {
+        this.rang = rang;
+    }
 }
