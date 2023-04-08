@@ -1,12 +1,17 @@
+package com.oop.project;
+
 public class Stats {
-    private Task task;
     private int countReview;
     private int countTasks;
 
-    public Stats(Task task, int countReview, int countTasks) {
-        this.task = task;
+    public Stats(int countReview, int countTasks) {
         this.countReview = countReview;
         this.countTasks = countTasks;
+    }
+
+    @Override
+    public String toString() {
+        return "Stat: \n\t Review count: " + this.countReview + "\n\t Task count: " + this.countTasks;
     }
 
     public int getCountReview() {

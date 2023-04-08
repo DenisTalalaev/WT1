@@ -1,12 +1,14 @@
+package com.oop.project;
+
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Admin extends User{
+public class Admin extends User {
     private boolean isRoot;
-    private int salary = 0;
+    private double salary = 0;
     private ArrayList<Integer> taskIDs;
 
-    Admin(){
+    Admin() {
         isRoot = false;
         User user = new User();
         taskIDs = new ArrayList<>();
@@ -35,11 +37,11 @@ public class Admin extends User{
         this.isRoot = root;
     }
 
-    public int getSalary() {
+    public double getSalary() {
         return salary;
     }
 
-    public void setSalary(int salary) {
+    public void setSalary(double salary) {
         this.salary = salary;
     }
 
@@ -49,5 +51,15 @@ public class Admin extends User{
 
     public void setTaskIDs(ArrayList<Integer> taskIDs) {
         this.taskIDs = taskIDs;
+    }
+
+    @Override
+    public String toString() {
+        String string = "";
+        string += super.toString();
+        string += this.isRoot ? "Root: true\n" : "Root: false\n";
+        string += "Salary: " + this.salary + " Near/month\n";
+        string += "Accessed tasks: " + Task.taskNamesByList(this.taskIDs) + "\n";
+        return string;
     }
 }

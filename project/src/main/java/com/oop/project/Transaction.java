@@ -1,19 +1,24 @@
+package com.oop.project;
+
 public class Transaction {
-    private  int amount;
+    private double amount;
     private String walletTo;
     private String walletFrom;
 
-    public Transaction(int amount, String walletTo, String walletFrom) {
+    public Transaction(double amount, String walletTo, String walletFrom) {
         this.amount = amount;
         this.walletTo = walletTo;
         this.walletFrom = walletFrom;
     }
 
-    public int getAmount() {
+    public Transaction() {
+    }
+
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
@@ -35,10 +40,6 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return "Transaction{" +
-                "amount=" + amount +
-                ", walletTo='" + walletTo + '\'' +
-                ", walletFrom='" + walletFrom + '\'' +
-                '}';
+        return "FROM: " + this.walletFrom + "\tTO: " + this.walletTo + "\t AMOUNT: " + this.amount + " Near";
     }
 }
