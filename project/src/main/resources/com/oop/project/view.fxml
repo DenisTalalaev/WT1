@@ -92,7 +92,7 @@
                 <TableColumn fx:id="usersTable" prefWidth="375.1999816894531" text="Users" />
               </columns>
             </TableView>
-            <Button fx:id="applyButton" layoutX="261.0" layoutY="575.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="124.0" text="Apply" visible="false" />
+            <Button fx:id="applyButton" layoutX="261.0" layoutY="575.0" mnemonicParsing="false" onAction="#applyButtonPress" prefHeight="25.0" prefWidth="124.0" text="Apply" visible="false" />
             <Button fx:id="cancelButton" layoutX="131.0" layoutY="575.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="124.0" text="Cancel" visible="false" />
             <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="279.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
             <Label fx:id="accessedTasksLabel" layoutX="208.0" layoutY="122.0" text="Accessed tasks" visible="false" />
@@ -114,11 +114,11 @@
             <TextField fx:id="moderatorRangEdit" layoutX="22.0" layoutY="344.0" prefHeight="25.0" prefWidth="359.0" visible="false" />
             <Pane fx:id="accessedTasksTable" layoutX="203.0" layoutY="146.0" prefHeight="169.0" prefWidth="179.0" style="-fx-border-color: lightgrey;" visible="false">
                <children>
-                  <CheckBox layoutX="48.0" layoutY="41.0" mnemonicParsing="false" text="NightSky" />
-                  <CheckBox layoutX="48.0" layoutY="72.0" mnemonicParsing="false" text="MoonDance" />
-                  <CheckBox layoutX="48.0" layoutY="103.0" mnemonicParsing="false" text="SunShine" />
-                  <CheckBox layoutX="48.0" layoutY="132.0" mnemonicParsing="false" text="Acade" />
-                  <CheckBox layoutX="13.0" layoutY="17.0" mnemonicParsing="false" text="Accessed tasks" />
+                  <CheckBox fx:id="nightSkyCheckBox" layoutX="48.0" layoutY="41.0" mnemonicParsing="false" text="NightSky" />
+                  <CheckBox fx:id="moonDanceCheckBox" layoutX="48.0" layoutY="72.0" mnemonicParsing="false" text="MoonDance" />
+                  <CheckBox fx:id="sunShineCheckBox" layoutX="48.0" layoutY="103.0" mnemonicParsing="false" text="SunShine" />
+                  <CheckBox fx:id="acadeCheckBox" layoutX="48.0" layoutY="132.0" mnemonicParsing="false" text="Acade" />
+                  <CheckBox fx:id="accessedTasksCheckBox" layoutX="13.0" layoutY="17.0" mnemonicParsing="false" onAction="#checkAllTasks" text="Accessed tasks" />
                </children>
             </Pane>
          </children>

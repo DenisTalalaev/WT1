@@ -3,16 +3,24 @@ package com.oop.project;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
+import java.time.LocalDate;
 
 public class Controller extends Main {
 
+    @FXML
+    private CheckBox acadeCheckBox;
 
+    @FXML
+    private CheckBox accessedTasksCheckBox;
 
     @FXML
     private Label accessedTasksLabel;
 
     @FXML
     private Pane accessedTasksTable;
+
+    @FXML
+    private Button addPermissionButton;
 
     @FXML
     private TextField addPermissionEdit;
@@ -45,9 +53,6 @@ public class Controller extends Main {
     private Button cancelButton;
 
     @FXML
-    private Button addPermissionButton;
-
-    @FXML
     private Button deletePermissionButton;
 
     @FXML
@@ -66,7 +71,13 @@ public class Controller extends Main {
     private Label moderatorRangLabel;
 
     @FXML
+    private CheckBox moonDanceCheckBox;
+
+    @FXML
     private TextField nameField;
+
+    @FXML
+    private CheckBox nightSkyCheckBox;
 
     @FXML
     private TableView<?> permissionTable;
@@ -85,6 +96,9 @@ public class Controller extends Main {
 
     @FXML
     private Label salaryLabel;
+
+    @FXML
+    private CheckBox sunShineCheckBox;
 
     @FXML
     private TextField taskCountEdit;
@@ -154,6 +168,174 @@ public class Controller extends Main {
         }
     }
 
+    @FXML
+    void checkAllTasks() {
+        boolean status = accessedTasksCheckBox.isSelected();
+        nightSkyCheckBox.setSelected(status);
+        moonDanceCheckBox.setSelected(status);
+        sunShineCheckBox.setSelected(status);
+        acadeCheckBox.setSelected(status);
+    }
+
+    @FXML
+    void applyButtonPress() {
+        resetShadows();
+        User user = null;
+        switch (userTypeDropBox.valueProperty().getValue().toString()) {
+            case "Developer":
+                if (!isDeveloperFieldsFine()) {
+
+                } else {
+                    user = UserFactory.createUser(UserType.DEVELOPER);
+                }
+                break;
+            case "Admin":
+                switch (adminTypeDropBox.valueProperty().getValue().toString()) {
+                    case "TechnicalAdmin":
+                        if (!isTechnicalAdminFieldsFine()) {
+
+                        } else {
+                            user = UserFactory.createUser(UserType.TECHNICAL_ADMIN);
+                        }
+                        break;
+                    case "Moderator":
+                        if (!isModeratorFieldsFine()) {
+
+                        } else {
+                            user = UserFactory.createUser(UserType.MODERATOR);
+                        }
+                        break;
+                }
+                break;
+            default:
+                return;
+        }
+    }
+
+    private void resetShadows() {
+        nameField.setStyle(null);
+        birthDateEdite.setStyle(null);
+        moderatorRangEdit.setStyle(null);
+        salaryEdit.setStyle(null);
+        walletEdit.setStyle(null);
+        taskCountEdit.setStyle(null);
+        reviewCountEdit.setStyle(null);
+    }
+
+    private boolean isUserFieldsFine() {
+        boolean flag = true;
+        try {
+            if (nameField.getText().toString().length() == 0) {
+                nameField.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+                flag = false;
+            }
+
+            for (char ch : nameField.getText().toCharArray()
+            ) {
+                if (Character.isDigit(ch)) {
+                    nameField.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+                    flag =  false;
+                }
+            }
+
+            LocalDate date = birthDateEdite.getValue();
+            if (date == null || date.isAfter(LocalDate.now())) {
+                birthDateEdite.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+                flag = false;
+            }
+        } catch (Exception e) {
+            birthDateEdite.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+            flag = false;
+        }
+        return flag;
+    }
+
+    private boolean isModeratorFieldsFine() {
+        boolean flag = isUserFieldsFine() & isAdminFieldsFine();
+        try {
+            int temp = Integer.parseInt(moderatorRangEdit.getText());
+            if (temp > 3 || temp < 0) flag = false;
+        } catch (Exception ex) {
+            flag = false;
+        }
+        if(!flag)
+            moderatorRangEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+        return flag;
+    }
+
+    private boolean isAdminFieldsFine() {
+        boolean flag = true;
+        try {
+            if (salaryEdit.getText().toString().length() == 0) {
+                salaryEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+                flag = false;
+            }
+            double temp = Double.parseDouble(salaryEdit.getText().toString());
+            if (temp < 0.0) {
+                salaryEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+                flag = false;
+            }
+        } catch (Exception ex) {
+            salaryEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+            flag = false;
+        }
+        return flag;
+    }
+
+    private boolean isTechnicalAdminFieldsFine() {
+        boolean flag = isUserFieldsFine() & isAdminFieldsFine();
+        return flag;
+    }
+
+    private boolean isDeveloperFieldsFine() {
+        boolean flag = isUserFieldsFine();
+        try{
+            if(taskCountEdit.getText().toString().length() == 0){
+                flag = false;
+                taskCountEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+            }
+            int num = Integer.parseInt(taskCountEdit.getText().toString());
+            if (num < 0){
+                flag = false;
+                taskCountEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+            }
+        } catch ( Exception e){
+            flag = false;
+            taskCountEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+        }
+
+        try{
+            if(reviewCountEdit.getText().toString().length() == 0){
+                flag = false;
+                reviewCountEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+            }
+            int num = Integer.parseInt(reviewCountEdit.getText().toString());
+            if(num < 0){
+                flag = false;
+                reviewCountEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+            }
+        } catch ( Exception e){
+            flag = false;
+            reviewCountEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+        }
+
+        if(walletEdit.getText().toString().length() == 0){
+            flag = false;
+            walletEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+        } else {
+            if(walletEdit.getText().toString().endsWith(".near")){
+                if(walletEdit.getText().toString().split("\\.").length != 2){
+                    flag = false;
+                    walletEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+                }
+            } else if(walletEdit.getText().toString().contains("\\.") || walletEdit.getText().toString().length() != 64){
+                flag = false;
+                walletEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+            }
+        }
+        return flag;
+    }
+
 
     private void loadModeratorUI() {
         setDeveloperUIVisible(false);
@@ -172,6 +354,12 @@ public class Controller extends Main {
     }
 
     private void loadAdminUI() {
+        accessedTasksCheckBox.setSelected(false);
+        nightSkyCheckBox.setSelected(false);
+        moonDanceCheckBox.setSelected(false);
+        sunShineCheckBox.setSelected(false);
+        acadeCheckBox.setSelected(false);
+
         setDeveloperUIVisible(false);
         setModeratorUIVisible(false);
         setTechnicalAdminUIVisible(false);

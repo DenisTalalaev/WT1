@@ -1,7 +1,7 @@
 package com.oop.project;
 
 public class UserFactory {
-    public User createUser(UserType type){
+    public static User createUser(UserType type){
         User user = null;
         switch (type){
             case DEVELOPER -> {
