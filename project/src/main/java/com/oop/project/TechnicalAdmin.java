@@ -3,6 +3,10 @@ package com.oop.project;
 import java.util.ArrayList;
 
 public class TechnicalAdmin extends Admin {
+    public ArrayList<Perm> getPermissoins() {
+        return permissoins;
+    }
+
     private ArrayList<Perm> permissoins = new ArrayList<>();
 
     @Override

@@ -21,7 +21,7 @@ public class Controller extends Main {
         SHOW_USER
     }
 
-
+    private User userBuffer;
     private Action action;
 
 
@@ -53,7 +53,7 @@ public class Controller extends Main {
     private Button addTransactionButton;
 
     @FXML
-    private ComboBox<?> adminTypeDropBox;
+    private ComboBox<String> adminTypeDropBox;
 
     @FXML
     private Label adminTypeLabel;
@@ -116,7 +116,7 @@ public class Controller extends Main {
     private TableView<Perm> permissionTable;
 
     @FXML
-    private TableColumn<Perm, String>  permissionColumn;
+    private TableColumn<Perm, String> permissionColumn;
 
     @FXML
     private TextField reviewCountEdit;
@@ -167,7 +167,7 @@ public class Controller extends Main {
     private Button updateBtn;
 
     @FXML
-    private ComboBox<?> userTypeDropBox;
+    private ComboBox<String> userTypeDropBox;
 
     @FXML
     private Label userTypeLabel;
@@ -202,10 +202,72 @@ public class Controller extends Main {
     }
 
     @FXML
-    private void deleteBtnClick(){
+    private void deleteBtnClick() {
+        hideElements();
+        clearFields();
         User user = usersTable.getSelectionModel().getSelectedItem();
         crud.deleteUser(user);
         userObservableList.remove(user);
+    }
+
+    @FXML
+    private void updateBtnClick() {
+        transactionData.clear();
+        permissionsList.clear();
+        User user = usersTable.getSelectionModel().getSelectedItem();
+        userBuffer = user;
+        action = Action.UPDATE_USER;
+        loadUser(user);
+    }
+
+    private void loadUser(User user) {
+        setUserUIVisible(true);
+        nameField.setText(user.getName().split(":")[1].trim());
+        birthDateEdite.setValue(user.getBirth());
+        if (user instanceof Admin) {
+            userTypeDropBox.setValue(userTypeDropBox.getItems().get(1));
+            setAdminUIVisible(true);
+            salaryEdit.setText(String.valueOf(((Admin) user).getSalary()));
+            rootAccessCheckBox.setSelected(((Admin) user).isRoot());
+            if (((Admin) user).getTaskIDs().contains(Task.nightSky.getIndex())) {
+                nightSkyCheckBox.setSelected(true);
+            } else {
+                nightSkyCheckBox.setSelected(false);
+            }
+            if (((Admin) user).getTaskIDs().contains(Task.moonDance.getIndex())) {
+                moonDanceCheckBox.setSelected(true);
+            } else {
+                moonDanceCheckBox.setSelected(false);
+            }
+            if (((Admin) user).getTaskIDs().contains(Task.acade.getIndex())) {
+                acadeCheckBox.setSelected(true);
+            } else {
+                acadeCheckBox.setSelected(false);
+            }
+            if (((Admin) user).getTaskIDs().contains(Task.sunShine.getIndex())) {
+                sunShineCheckBox.setSelected(true);
+            } else {
+                sunShineCheckBox.setSelected(false);
+            }
+            if (user instanceof TechnicalAdmin) {
+                setTechnicalAdminUIVisible(true);
+                adminTypeDropBox.setValue(adminTypeDropBox.getItems().get(0));
+                permissionsList.addAll(((TechnicalAdmin) user).getPermissoins());
+            } else if (user instanceof Moderator) {
+                setModeratorUIVisible(true);
+                adminTypeDropBox.setValue(adminTypeDropBox.getItems().get(1));
+                moderatorRangEdit.setText(String.valueOf(((Moderator) user).getRang()));
+            }
+        } else if (user instanceof Developer) {
+            setDeveloperUIVisible(true);
+            userTypeDropBox.setValue(userTypeDropBox.getItems().get(0));
+            reviewCountEdit.setText(String.valueOf(((Developer) user).getStats().getCountReview()));
+            taskCountEdit.setText(String.valueOf(((Developer) user).getStats().getCountTasks()));
+            walletEdit.setText(((Developer) user).getWallet());
+            transactionData.addAll(((Developer) user).getTransactions());
+
+        }
+        applyCancelButtonsVisible(true);
     }
 
     private ObservableList<Transaction> transactionData = FXCollections.observableArrayList();
@@ -224,36 +286,37 @@ public class Controller extends Main {
         usersColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
 
         permissionTable.setItems(permissionsList);
-        permissionColumn.setCellValueFactory(cellData-> cellData.getValue().permissionProperty());
+        permissionColumn.setCellValueFactory(cellData -> cellData.getValue().permissionProperty());
 
         crud.hardInitialise();
-        for (User us: crud.getUsers()
-             ) {
+        for (User us : crud.getUsers()
+        ) {
             userObservableList.add(us);
         }
+        userObservableList.sort(Comparator.comparing(User::getName));
     }
 
     @FXML
-    private void addPermissionButtonClick(){
+    private void addPermissionButtonClick() {
         permissionsList.add(new Perm(addPermissionEdit.getText().toString()));
     }
 
 
     @FXML
-    private void deletePermissionButtonClick(){
+    private void deletePermissionButtonClick() {
         Perm selected = permissionTable.getSelectionModel().getSelectedItem();
         permissionsList.remove(selected);
     }
 
 
     @FXML
-    private void deleteTransactionButtonClick(){
+    private void deleteTransactionButtonClick() {
         Transaction selected = transactionsTable.getSelectionModel().getSelectedItem();
         transactionData.remove(selected);
     }
 
     @FXML
-    private void cancelButtonClick(){
+    private void cancelButtonClick() {
         hideElements();
         clearFields();
         action = Action.SHOW_USER;
@@ -400,6 +463,17 @@ public class Controller extends Main {
 
         switch (action) {
             case UPDATE_USER -> {
+                crud.deleteUser(userBuffer);
+                userObservableList.remove(userBuffer);
+                createUserHelper(user);
+
+                TableView.TableViewSelectionModel selectionModel = usersTable.getSelectionModel();
+                if (!selectionModel.isEmpty()) {
+                    int index = selectionModel.getSelectedIndex();
+                    if (index < usersTable.getItems().size() - 1) {
+                        selectionModel.selectNext();
+                    }
+                }
 
                 break;
             }
@@ -423,19 +497,19 @@ public class Controller extends Main {
             }
             crud.addDeveloper((Developer) user);
         }
-        if(user instanceof Admin){
+        if (user instanceof Admin) {
             ((Admin) user).setRoot(rootAccessCheckBox.isSelected());
             ((Admin) user).setSalary(salaryEdit.getText());
             ArrayList<Integer> taskIds = new ArrayList<>();
-            if(nightSkyCheckBox.isSelected()) taskIds.add(Task.nightSky.getIndex());
-            if(moonDanceCheckBox.isSelected()) taskIds.add(Task.moonDance.getIndex());
-            if(sunShineCheckBox.isSelected()) taskIds.add(Task.sunShine.getIndex());
-            if(acadeCheckBox.isSelected()) taskIds.add(Task.acade.getIndex());
+            if (nightSkyCheckBox.isSelected()) taskIds.add(Task.nightSky.getIndex());
+            if (moonDanceCheckBox.isSelected()) taskIds.add(Task.moonDance.getIndex());
+            if (sunShineCheckBox.isSelected()) taskIds.add(Task.sunShine.getIndex());
+            if (acadeCheckBox.isSelected()) taskIds.add(Task.acade.getIndex());
             ((Admin) user).setTaskIDs(taskIds);
         }
         if (user instanceof TechnicalAdmin) {
-            for (Perm perm: permissionsList
-                 ) {
+            for (Perm perm : permissionsList
+            ) {
                 ((TechnicalAdmin) user).addPermission(perm);
             }
             crud.addTechnicalAdmin((TechnicalAdmin) user);
@@ -473,6 +547,8 @@ public class Controller extends Main {
         amountEdit.setText("");
         addPermissionEdit.setText("");
         moderatorRangEdit.setText("");
+        transactionData.clear();
+        permissionsList.clear();
     }
 
     private void resetShadows() {

@@ -17,12 +17,17 @@ public class CRUD {
 
     public void hardInitialise() {
         //Developers
+        ArrayList<Character> arr = new ArrayList<>();
+        for (Character ch: "abcdefghijklmnop".toCharArray()
+             ) {
+            arr.add(ch);
+        }
         Random random = new Random();
         for (int i = 0; i < 5; i++) {
             Developer developer = new Developer();
-            developer.setName("Developer " + (i + 1));
+            developer.setName("Developer " + arr.get(i + 1));
             developer.setBirth(User.generateRandomDate());
-            developer.setWallet("developer" + i + ".near");
+            developer.setWallet("developer" + arr.get(i) + ".near");
             developer.setStat(new Stats(random.nextInt(100), random.nextInt(100)));
             for (int j = 0; j < random.nextInt(5) + 2; j++) {
                 Transaction transaction = new Transaction();
@@ -36,7 +41,7 @@ public class CRUD {
         //Technical Admins
         for (int i = 0; i < 5; i++) {
             TechnicalAdmin technicalAdmin = new TechnicalAdmin();
-            technicalAdmin.setName("TechnocalAdmin" + i);
+            technicalAdmin.setName("TechnocalAdmin " + arr.get(i));
             technicalAdmin.setBirth(User.generateRandomDate());
             var taskIds = new ArrayList<Integer>() {{
                 add(0);
@@ -53,7 +58,7 @@ public class CRUD {
         //Moderators
         for (int i = 0; i < 5; i++) {
             Moderator moderator = new Moderator();
-            moderator.setName("Moderator" + i);
+            moderator.setName("Moderator " + arr.get(i));
             moderator.setBirth(User.generateRandomDate());
             moderator.setRoot(random.nextBoolean());
             moderator.setSalary(random.nextInt(1500) + 5);

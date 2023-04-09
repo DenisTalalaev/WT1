@@ -123,7 +123,7 @@
             </Pane>
             <Button fx:id="createBtn" layoutX="403.0" layoutY="575.0" mnemonicParsing="false" onAction="#createBtnClick" prefHeight="25.0" prefWidth="87.0" text="Create" />
             <Button fx:id="deleteBtn" layoutX="495.0" layoutY="575.0" mnemonicParsing="false" onAction="#deleteBtnClick" prefHeight="25.0" prefWidth="87.0" text="Delete" />
-            <Button fx:id="updateBtn" layoutX="587.0" layoutY="575.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="87.0" text="Update" />
+            <Button fx:id="updateBtn" layoutX="587.0" layoutY="575.0" mnemonicParsing="false" onAction="#updateBtnClick" prefHeight="25.0" prefWidth="87.0" text="Update" />
             <Button fx:id="ShowBtn" layoutX="704.0" layoutY="575.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="87.0" text="Show" />
             <Label fx:id="showLabel" layoutX="16.0" layoutY="35.0" text="Label" visible="false" />
          </children>

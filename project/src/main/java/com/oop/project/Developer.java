@@ -12,6 +12,11 @@ public class Developer extends User {
     private String wallet;
     private Stats stats;
 
+
+
+    public Stats getStats() {
+        return stats;
+    }
     Developer(User user) {
         this.setBirth(user.getBirth());
         this.setName(user.getName());
