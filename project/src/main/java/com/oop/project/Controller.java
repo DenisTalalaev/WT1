@@ -26,7 +26,7 @@ public class Controller extends Main {
 
 
     @FXML
-    private Button ShowBtn;
+    private Button showBtn;
 
     @FXML
     private CheckBox acadeCheckBox;
@@ -134,7 +134,7 @@ public class Controller extends Main {
     private Label salaryLabel;
 
     @FXML
-    private Label showLabel;
+    private TextArea showLabel;
 
     @FXML
     private CheckBox sunShineCheckBox;
@@ -193,8 +193,34 @@ public class Controller extends Main {
     @FXML
     private Label walletToLabel;
 
+   @FXML
+    private ScrollPane showPanel;
+
+
+    @FXML
+    private void showUserButtonClick(){
+        showLabel.setText("");
+        showLabel.setVisible(true);
+        User user = usersTable.getSelectionModel().getSelectedItem();
+        if(user instanceof Developer){
+            for (String str: ((Developer)user).toStringArrayList()
+                 ) {
+                showLabel.setText(showLabel.getText() + str);
+            }
+        }
+
+        if(user instanceof TechnicalAdmin){
+            showLabel.setText(((TechnicalAdmin) user).toString());
+        }
+
+        if(user instanceof Moderator){
+            showLabel.setText(((Moderator) user).toString());
+        }
+    }
+
     @FXML
     private void createBtnClick() {
+        showLabel.setVisible(false);
         cancelButton.setVisible(true);
         transactionData.clear();
         action = Action.CREATE_USER;
@@ -203,6 +229,7 @@ public class Controller extends Main {
 
     @FXML
     private void deleteBtnClick() {
+        showLabel.setVisible(false);
         hideElements();
         clearFields();
         User user = usersTable.getSelectionModel().getSelectedItem();
@@ -212,6 +239,7 @@ public class Controller extends Main {
 
     @FXML
     private void updateBtnClick() {
+        showLabel.setVisible(false);
         transactionData.clear();
         permissionsList.clear();
         User user = usersTable.getSelectionModel().getSelectedItem();

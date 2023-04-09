@@ -6,6 +6,7 @@ import javafx.beans.value.ObservableValueBase;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -18,7 +19,7 @@ class User{
     @Override
     public String toString() {
         String  string = "Name: " + this.getName() + "\n";
-        SimpleDateFormat formatter = new SimpleDateFormat("dd.mm.yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         String formattedDate = formatter.format(this.birth);
         string += "Birth date: " + formattedDate + "\n";
         return string;

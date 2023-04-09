@@ -71,15 +71,14 @@ public class Developer extends User {
         this.wallet = wallet;
     }
 
-    @Override
-    public String toString() {
-        String string;
-        string = super.toString();
-        string += "Wallet: " + this.wallet + "\n";
-        string += "Stats: " + this.stats.toString() + "\n";
-        string += "Transacions:\n";
+    public ArrayList<String> toStringArrayList() {
+        ArrayList<String> string = new ArrayList<>();
+        string.add(super.toString());
+        string.add("Wallet: " + this.wallet + "\n");
+        string.add("Stats: " + this.stats.toString() + "\n");
+        string.add("Transacions:\n");
         for (Transaction transaction : this.transactions) {
-            string += "\t" + transaction.toString() + "\n";
+            string.add("\t" + transaction.toString() + "\n");
         }
         return string;
     }

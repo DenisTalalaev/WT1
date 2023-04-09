@@ -43,7 +43,7 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return "FROM: " + this.walletFrom + "\tTO: " + this.walletTo + "\t AMOUNT: " + this.amount + " Near";
+        return "FROM:" + this.walletFrom + "\n\tTO: " + this.walletTo + "\n\tAMOUNT: " + this.amount + " Near\n";
     }
 
     public ObservableValue<String> fromProperty() {
