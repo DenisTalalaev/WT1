@@ -10,6 +10,9 @@ public class Moderator extends Admin {
     public void setRang(int rang) {
         this.rang = rang;
     }
+    public void setRang(String rang) {
+        this.rang = Integer.parseInt(rang);
+    }
 
     @Override
     public String toString() {

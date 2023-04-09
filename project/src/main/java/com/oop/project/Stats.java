@@ -8,6 +8,10 @@ public class Stats {
         this.countReview = countReview;
         this.countTasks = countTasks;
     }
+    public Stats(String countReview, String countTasks) {
+        this.countReview = Integer.parseInt(countReview);
+        this.countTasks = Integer.parseInt(countTasks);
+    }
 
     @Override
     public String toString() {

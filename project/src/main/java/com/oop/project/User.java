@@ -1,6 +1,11 @@
 package com.oop.project;
 
+import javafx.beans.value.ObservableValue;
+import javafx.beans.value.ObservableValueBase;
+
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -8,7 +13,7 @@ import java.util.Random;
 
 class User{
     private String name;
-    private Date birth;
+    private LocalDate birth;
 
     @Override
     public String toString() {
@@ -19,7 +24,7 @@ class User{
         return string;
     }
 
-    User(String userName, Date birthday){
+    User(String userName, LocalDate birthday){
         this.name = userName;
         this.birth = birthday;
     }
@@ -28,11 +33,21 @@ class User{
         this.birth = generateRandomDate();
     }
 
-    public Date getBirth() {
+    public LocalDate getBirth() {
         return birth;
     }
 
     public String getName() {
+        if(this instanceof Developer){
+            return "Dev: " + name;
+        }
+        if(this instanceof Moderator){
+            return "Mod: " + name;
+        }
+
+        if(this instanceof TechnicalAdmin){
+            return "TAdm: " + name;
+        }
         return name;
     }
 
@@ -40,13 +55,13 @@ class User{
         this.name = name;
     }
 
-    public void setBirth(Date birth) {
+    public void setBirth(LocalDate birth) {
         this.birth = birth;
     }
 
 
 
-    public static Date generateRandomDate() {
+    public static LocalDate generateRandomDate() {
         Calendar start = new GregorianCalendar(1990, Calendar.JANUARY, 1);
         long startTime = start.getTimeInMillis();
         Calendar end = new GregorianCalendar(2010, Calendar.JANUARY, 1);
@@ -61,6 +76,15 @@ class User{
         int day = randomDate.get(Calendar.DAY_OF_MONTH);
 
         Date resultDate = new GregorianCalendar(year, month, day).getTime();
-        return resultDate;
+        return resultDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    public ObservableValue<String> nameProperty() {
+        return new ObservableValueBase<String>() {
+            @Override
+            public String getValue() {
+                return getName();
+            }
+        };
     }
 }

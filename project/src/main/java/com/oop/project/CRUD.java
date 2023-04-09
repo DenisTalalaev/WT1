@@ -5,6 +5,10 @@ import java.util.Random;
 
 public class CRUD {
 
+    public ArrayList<User> getUsers() {
+        return users;
+    }
+
     private ArrayList<User> users = new ArrayList<>();
 
     public CRUD() {
@@ -95,17 +99,10 @@ public class CRUD {
     }
 
     //delete
-    public void deleteDeveloper(Developer developer) {
-        users.remove(developer);
+    public void deleteUser(User user) {
+        users.remove(user);
     }
 
-    public void deleteTechnicalAdmin(TechnicalAdmin technicalAdmin) {
-        users.remove(technicalAdmin);
-    }
-
-    public void deleteModerator(Moderator moderator) {
-        users.remove(moderator);
-    }
 
     public void printTable() {
         for (User user: users

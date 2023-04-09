@@ -1,5 +1,6 @@
 package com.oop.project;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -23,7 +24,7 @@ public class Admin extends User {
         taskIDs = new ArrayList<>();
     }
 
-    public Admin(String userName, Date birthday, boolean isRoot) {
+    public Admin(String userName, LocalDate birthday, boolean isRoot) {
         super(userName, birthday);
         this.isRoot = isRoot;
         taskIDs = new ArrayList<>();
@@ -41,6 +42,9 @@ public class Admin extends User {
         return salary;
     }
 
+    public void setSalary(String salary) {
+        this.salary = Double.parseDouble(salary);
+    }
     public void setSalary(double salary) {
         this.salary = salary;
     }

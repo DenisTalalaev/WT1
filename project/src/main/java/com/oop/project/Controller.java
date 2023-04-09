@@ -1,11 +1,32 @@
 package com.oop.project;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.AccessibleAction;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
+
+import java.security.Permission;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Controller extends Main {
+    enum Action {
+        CREATE_USER,
+        DELETE_USER,
+        UPDATE_USER,
+        SHOW_USER
+    }
+
+
+    private Action action;
+
+
+    @FXML
+    private Button ShowBtn;
 
     @FXML
     private CheckBox acadeCheckBox;
@@ -50,7 +71,16 @@ public class Controller extends Main {
     private DatePicker birthDateEdite;
 
     @FXML
+    private Label birthDateLabel;
+
+    @FXML
     private Button cancelButton;
+
+    @FXML
+    private Button createBtn;
+
+    @FXML
+    private Button deleteBtn;
 
     @FXML
     private Button deletePermissionButton;
@@ -77,10 +107,16 @@ public class Controller extends Main {
     private TextField nameField;
 
     @FXML
+    private Label nameLabel;
+
+    @FXML
     private CheckBox nightSkyCheckBox;
 
     @FXML
-    private TableView<?> permissionTable;
+    private TableView<Perm> permissionTable;
+
+    @FXML
+    private TableColumn<Perm, String>  permissionColumn;
 
     @FXML
     private TextField reviewCountEdit;
@@ -98,7 +134,19 @@ public class Controller extends Main {
     private Label salaryLabel;
 
     @FXML
+    private Label showLabel;
+
+    @FXML
     private CheckBox sunShineCheckBox;
+
+    @FXML
+    private TableColumn<Transaction, String> tableColumnFROM;
+
+    @FXML
+    private TableColumn<Transaction, String> tableColumnTO;
+
+    @FXML
+    private TableColumn<Transaction, Double> tableColumnAMOUNT;
 
     @FXML
     private TextField taskCountEdit;
@@ -110,13 +158,22 @@ public class Controller extends Main {
     private Label transactionsLabel;
 
     @FXML
-    private TableView<?> transactionsTable;
+    private TableView<Transaction> transactionsTable;
+
+    @FXML
+    private TableView<User> usersTable;
+
+    @FXML
+    private Button updateBtn;
 
     @FXML
     private ComboBox<?> userTypeDropBox;
 
     @FXML
-    private TableColumn<?, ?> usersTable;
+    private Label userTypeLabel;
+
+    @FXML
+    private TableColumn<User, String> usersColumn;
 
     @FXML
     private TextField walletEdit;
@@ -136,6 +193,136 @@ public class Controller extends Main {
     @FXML
     private Label walletToLabel;
 
+    @FXML
+    private void createBtnClick() {
+        cancelButton.setVisible(true);
+        transactionData.clear();
+        action = Action.CREATE_USER;
+        setUserUIVisible(true);
+    }
+
+    @FXML
+    private void deleteBtnClick(){
+        User user = usersTable.getSelectionModel().getSelectedItem();
+        crud.deleteUser(user);
+        userObservableList.remove(user);
+    }
+
+    private ObservableList<Transaction> transactionData = FXCollections.observableArrayList();
+    private ObservableList<User> userObservableList = FXCollections.observableArrayList();
+    private ObservableList<Perm> permissionsList = FXCollections.observableArrayList();
+
+
+    public void initialize() {
+        transactionsTable.setItems(transactionData);
+
+        tableColumnFROM.setCellValueFactory(cellData -> cellData.getValue().fromProperty());
+        tableColumnTO.setCellValueFactory(cellData -> cellData.getValue().toProperty());
+        tableColumnAMOUNT.setCellValueFactory(cellData -> cellData.getValue().amountProperty());
+
+        usersTable.setItems(userObservableList);
+        usersColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+
+        permissionTable.setItems(permissionsList);
+        permissionColumn.setCellValueFactory(cellData-> cellData.getValue().permissionProperty());
+
+        crud.hardInitialise();
+        for (User us: crud.getUsers()
+             ) {
+            userObservableList.add(us);
+        }
+    }
+
+    @FXML
+    private void addPermissionButtonClick(){
+        permissionsList.add(new Perm(addPermissionEdit.getText().toString()));
+    }
+
+
+    @FXML
+    private void deletePermissionButtonClick(){
+        Perm selected = permissionTable.getSelectionModel().getSelectedItem();
+        permissionsList.remove(selected);
+    }
+
+
+    @FXML
+    private void deleteTransactionButtonClick(){
+        Transaction selected = transactionsTable.getSelectionModel().getSelectedItem();
+        transactionData.remove(selected);
+    }
+
+    @FXML
+    private void cancelButtonClick(){
+        hideElements();
+        clearFields();
+        action = Action.SHOW_USER;
+    }
+
+
+    @FXML
+    private void addTransactionButtonClick() {
+        walletFromEdit.setStyle(null);
+        walletToEdit.setStyle(null);
+        amountEdit.setStyle(null);
+        if (!isTransactionFieldFine()) {
+            return;
+        } else {
+            Transaction transaction = new Transaction(walletFromEdit.getText(), walletToEdit.getText(), amountEdit.getText());
+            transactionData.add(transaction);
+            transactionsTable.setItems(transactionData);
+        }
+    }
+
+    private boolean isTransactionFieldFine() {
+        boolean flag = true;
+        if (!isWalletFine(walletToEdit)) {
+            flag = false;
+            walletToEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+        }
+
+        if (!isWalletFine(walletFromEdit)) {
+            flag = false;
+            walletFromEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+        }
+
+        try {
+            double temp = Double.parseDouble(amountEdit.getText().toString());
+            if (temp < 0.0) {
+                flag = false;
+                amountEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+            }
+        } catch (Exception e) {
+            flag = false;
+            amountEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
+        }
+        return flag;
+    }
+
+    private boolean isWalletFine(TextField edit) {
+        boolean flag = true;
+        if (edit.getText().toString().length() == 0) {
+            flag = false;
+        } else {
+            if (edit.getText().toString().endsWith(".near")) {
+                if (edit.getText().toString().split("\\.").length != 2) {
+                    flag = false;
+                }
+            } else if (edit.getText().toString().contains("\\.") || walletEdit.getText().toString().length() != 64) {
+                flag = false;
+            }
+        }
+        return flag;
+    }
+
+    private void setUserUIVisible(boolean status) {
+        nameLabel.setVisible(status);
+        nameField.setVisible(status);
+        birthDateEdite.setVisible(status);
+        birthDateLabel.setVisible(status);
+        userTypeLabel.setVisible(status);
+        userTypeDropBox.setVisible(status);
+    }
 
     @FXML
     void userTypeDropBoxChange() {
@@ -184,7 +371,7 @@ public class Controller extends Main {
         switch (userTypeDropBox.valueProperty().getValue().toString()) {
             case "Developer":
                 if (!isDeveloperFieldsFine()) {
-
+                    return;
                 } else {
                     user = UserFactory.createUser(UserType.DEVELOPER);
                 }
@@ -193,14 +380,14 @@ public class Controller extends Main {
                 switch (adminTypeDropBox.valueProperty().getValue().toString()) {
                     case "TechnicalAdmin":
                         if (!isTechnicalAdminFieldsFine()) {
-
+                            return;
                         } else {
                             user = UserFactory.createUser(UserType.TECHNICAL_ADMIN);
                         }
                         break;
                     case "Moderator":
                         if (!isModeratorFieldsFine()) {
-
+                            return;
                         } else {
                             user = UserFactory.createUser(UserType.MODERATOR);
                         }
@@ -210,6 +397,82 @@ public class Controller extends Main {
             default:
                 return;
         }
+
+        switch (action) {
+            case UPDATE_USER -> {
+
+                break;
+            }
+            case CREATE_USER -> {
+                createUserHelper(user);
+                break;
+            }
+        }
+
+    }
+
+    private void createUserHelper(User user) {
+        user.setName(nameField.getText());
+        user.setBirth(birthDateEdite.getValue());
+        if (user instanceof Developer) {
+            ((Developer) user).setStat(new Stats(reviewCountEdit.getText(), taskCountEdit.getText()));
+            ((Developer) user).setWallet(walletEdit.getText());
+            for (Transaction transaction : transactionData
+            ) {
+                ((Developer) user).addTransaction(transaction);
+            }
+            crud.addDeveloper((Developer) user);
+        }
+        if(user instanceof Admin){
+            ((Admin) user).setRoot(rootAccessCheckBox.isSelected());
+            ((Admin) user).setSalary(salaryEdit.getText());
+            ArrayList<Integer> taskIds = new ArrayList<>();
+            if(nightSkyCheckBox.isSelected()) taskIds.add(Task.nightSky.getIndex());
+            if(moonDanceCheckBox.isSelected()) taskIds.add(Task.moonDance.getIndex());
+            if(sunShineCheckBox.isSelected()) taskIds.add(Task.sunShine.getIndex());
+            if(acadeCheckBox.isSelected()) taskIds.add(Task.acade.getIndex());
+            ((Admin) user).setTaskIDs(taskIds);
+        }
+        if (user instanceof TechnicalAdmin) {
+            for (Perm perm: permissionsList
+                 ) {
+                ((TechnicalAdmin) user).addPermission(perm);
+            }
+            crud.addTechnicalAdmin((TechnicalAdmin) user);
+        }
+        if (user instanceof Moderator) {
+            ((Moderator) user).setRang(moderatorRangEdit.getText());
+            crud.addModerator((Moderator) user);
+        }
+
+        userObservableList.add(user);
+        userObservableList.sort(Comparator.comparing(User::getName));
+
+        clearFields();
+        hideElements();
+    }
+
+    private void hideElements() {
+        setUserUIVisible(false);
+        setAdminUIVisible(false);
+        setModeratorUIVisible(false);
+        setDeveloperUIVisible(false);
+        setTechnicalAdminUIVisible(false);
+        applyCancelButtonsVisible(false);
+    }
+
+    private void clearFields() {
+        nameField.setText("");
+        birthDateEdite.setValue(null);
+        salaryEdit.setText("");
+        reviewCountEdit.setText("");
+        taskCountEdit.setText("");
+        walletEdit.setText("");
+        walletToEdit.setText("");
+        walletFromEdit.setText("");
+        amountEdit.setText("");
+        addPermissionEdit.setText("");
+        moderatorRangEdit.setText("");
     }
 
     private void resetShadows() {
@@ -234,7 +497,7 @@ public class Controller extends Main {
             ) {
                 if (Character.isDigit(ch)) {
                     nameField.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
-                    flag =  false;
+                    flag = false;
                 }
             }
 
@@ -258,7 +521,7 @@ public class Controller extends Main {
         } catch (Exception ex) {
             flag = false;
         }
-        if(!flag)
+        if (!flag)
             moderatorRangEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
         return flag;
     }
@@ -289,46 +552,46 @@ public class Controller extends Main {
 
     private boolean isDeveloperFieldsFine() {
         boolean flag = isUserFieldsFine();
-        try{
-            if(taskCountEdit.getText().toString().length() == 0){
+        try {
+            if (taskCountEdit.getText().toString().length() == 0) {
                 flag = false;
                 taskCountEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
             }
             int num = Integer.parseInt(taskCountEdit.getText().toString());
-            if (num < 0){
+            if (num < 0) {
                 flag = false;
                 taskCountEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
             }
-        } catch ( Exception e){
+        } catch (Exception e) {
             flag = false;
             taskCountEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
         }
 
-        try{
-            if(reviewCountEdit.getText().toString().length() == 0){
+        try {
+            if (reviewCountEdit.getText().toString().length() == 0) {
                 flag = false;
                 reviewCountEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
             }
             int num = Integer.parseInt(reviewCountEdit.getText().toString());
-            if(num < 0){
+            if (num < 0) {
                 flag = false;
                 reviewCountEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
             }
-        } catch ( Exception e){
+        } catch (Exception e) {
             flag = false;
             reviewCountEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
         }
 
-        if(walletEdit.getText().toString().length() == 0){
+        if (walletEdit.getText().toString().length() == 0) {
             flag = false;
             walletEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
         } else {
-            if(walletEdit.getText().toString().endsWith(".near")){
-                if(walletEdit.getText().toString().split("\\.").length != 2){
+            if (walletEdit.getText().toString().endsWith(".near")) {
+                if (walletEdit.getText().toString().split("\\.").length != 2) {
                     flag = false;
                     walletEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
                 }
-            } else if(walletEdit.getText().toString().contains("\\.") || walletEdit.getText().toString().length() != 64){
+            } else if (walletEdit.getText().toString().contains("\\.") || walletEdit.getText().toString().length() != 64) {
                 flag = false;
                 walletEdit.setStyle("-fx-effect: dropshadow(three-pass-box, red, 10, 0, 0, 0);");
             }

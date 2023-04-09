@@ -3,15 +3,15 @@ package com.oop.project;
 import java.util.ArrayList;
 
 public class TechnicalAdmin extends Admin {
-    private ArrayList<String> permissoins = new ArrayList<>();
+    private ArrayList<Perm> permissoins = new ArrayList<>();
 
     @Override
     public String toString() {
         String string = super.toString();
         string += "Permissions:\n";
-        for (String permission: permissoins
+        for (Perm permission: permissoins
              ) {
-            string += "\t" + permission + "\n";
+            string += "\t" + permission.name + "\n";
         }
         return string;
     }
@@ -34,12 +34,17 @@ public class TechnicalAdmin extends Admin {
         super.setRoot(isRoot);
     }
 
-    public int addPermission(String permission) {
+    public void addPermission(Perm permission) {
         try {
             this.permissoins.add(permission);
         } catch (Exception e) {
-            return 1;
         }
-        return 0;
+    }
+
+    public void addPermission(String permission) {
+        try {
+            this.permissoins.add(new Perm(permission));
+        } catch (Exception e) {
+        }
     }
 }

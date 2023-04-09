@@ -40,10 +40,10 @@
       </MenuBar>
    </top>
    <left>
-      <Pane prefHeight="614.0" prefWidth="399.0" BorderPane.alignment="CENTER">
+      <Pane prefHeight="614.0" prefWidth="802.0" BorderPane.alignment="CENTER">
          <children>
-            <Label layoutX="14.0" layoutY="14.0" text="Name" />
-             <ComboBox fx:id="userTypeDropBox" accessibleText="dddsss" layoutX="14.0" layoutY="144.0" onAction="#userTypeDropBoxChange" prefHeight="25.0" prefWidth="176.0">
+            <Label fx:id="nameLabel" layoutX="14.0" layoutY="14.0" text="Name" visible="false" />
+             <ComboBox fx:id="userTypeDropBox" accessibleText="dddsss" layoutX="14.0" layoutY="144.0" onAction="#userTypeDropBoxChange" prefHeight="25.0" prefWidth="176.0" visible="false">
                  <items>
                      <FXCollections fx:factory="observableArrayList">
                          <String fx:value="Developer" />
@@ -51,9 +51,9 @@
                      </FXCollections>
                  </items>
              </ComboBox>
-            <TextField fx:id="nameField" layoutX="15.0" layoutY="31.0" prefHeight="25.0" prefWidth="248.0" />
-            <DatePicker fx:id="birthDateEdite" layoutX="15.0" layoutY="88.0" prefHeight="25.0" prefWidth="249.0" />
-            <Label layoutX="14.0" layoutY="63.0" text="Birth date" />
+            <TextField fx:id="nameField" layoutX="15.0" layoutY="31.0" prefHeight="25.0" prefWidth="248.0" visible="false" />
+            <DatePicker fx:id="birthDateEdite" layoutX="15.0" layoutY="88.0" prefHeight="25.0" prefWidth="249.0" visible="false" />
+            <Label fx:id="birthDateLabel" layoutX="14.0" layoutY="63.0" text="Birth date" visible="false" />
             <ComboBox fx:id="adminTypeDropBox" accessibleText="dddsss" layoutX="19.0" layoutY="290.0" onAction="#adminTypeDropBoxChange" prefHeight="25.0" prefWidth="176.0" visible="false">
                <items>
                   <FXCollections fx:factory="observableArrayList">
@@ -63,7 +63,7 @@
                </items>
             </ComboBox>
             <TextField fx:id="reviewCountEdit" layoutX="15.0" layoutY="200.0" prefHeight="25.0" prefWidth="178.0" visible="false" />
-            <Label layoutX="14.0" layoutY="121.0" text="User type" />
+            <Label fx:id="userTypeLabel" layoutX="14.0" layoutY="121.0" text="User type" visible="false" />
             <Label fx:id="adminTypeLabel" layoutX="18.0" layoutY="267.0" text="Admin type" visible="false" />
             <Label fx:id="reviewCountLabel" layoutX="14.0" layoutY="178.0" text="Review count" visible="false" />
             <TextField fx:id="taskCountEdit" layoutX="208.0" layoutY="200.0" prefHeight="25.0" prefWidth="173.0" visible="false" />
@@ -72,28 +72,28 @@
             <Label fx:id="walletLabel" layoutX="14.0" layoutY="237.0" text="Near wallet address" visible="false" />
             <TableView fx:id="transactionsTable" layoutX="18.0" layoutY="307.0" prefHeight="138.0" prefWidth="369.0" visible="false">
               <columns>
-                <TableColumn prefWidth="147.20001220703125" text="FROM" />
-                <TableColumn minWidth="6.4000244140625" prefWidth="157.5999755859375" text="TO" />
-                  <TableColumn prefWidth="64.0" text="AMOUNT" />
+                <TableColumn fx:id="tableColumnFROM" prefWidth="147.20001220703125" text="FROM" />
+                <TableColumn fx:id="tableColumnTO" minWidth="6.4000244140625" prefWidth="157.5999755859375" text="TO" />
+                  <TableColumn fx:id="tableColumnAMOUNT" prefWidth="64.0" text="AMOUNT" />
               </columns>
             </TableView>
-            <Button fx:id="addTransactionButton" layoutX="261.0" layoutY="536.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="125.0" text="Add transaction" visible="false" />
+            <Button fx:id="addTransactionButton" layoutX="261.0" layoutY="536.0" mnemonicParsing="false" onAction="#addTransactionButtonClick" prefHeight="25.0" prefWidth="125.0" text="Add transaction" visible="false" />
             <TextField fx:id="walletFromEdit" layoutX="20.0" layoutY="501.0" visible="false" />
             <TextField fx:id="walletToEdit" layoutX="174.0" layoutY="501.0" visible="false" />
             <TextField fx:id="amountEdit" layoutX="329.0" layoutY="501.0" prefHeight="25.0" prefWidth="57.0" visible="false" />
-            <Button fx:id="deleteTransactionButton" layoutX="258.0" layoutY="453.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="128.0" text="Delete transacrion" visible="false" />
+            <Button fx:id="deleteTransactionButton" layoutX="258.0" layoutY="453.0" mnemonicParsing="false" onAction="#deleteTransactionButtonClick" prefHeight="25.0" prefWidth="128.0" text="Delete transacrion" visible="false" />
             <Label fx:id="transactionsLabel" layoutX="20.0" layoutY="290.0" text="Transactions" visible="false" />
             <Label fx:id="deleteTransactionLabel" layoutX="150.0" layoutY="457.0" text="Select cell to delete" visible="false" />
             <Label fx:id="walletFromLabel" layoutX="20.0" layoutY="484.0" text="Wallet FROM" visible="false" />
             <Label fx:id="walletToLabel" layoutX="174.0" layoutY="484.0" text="Wallet TO" visible="false" />
             <Label fx:id="amountLabel" layoutX="329.0" layoutY="484.0" text="Amount" visible="false" />
-            <TableView layoutX="400.0" layoutY="1.0" prefHeight="613.0" prefWidth="394.0">
+            <TableView fx:id="usersTable" layoutX="403.0" layoutY="1.0" prefHeight="565.0" prefWidth="391.0">
               <columns>
-                <TableColumn fx:id="usersTable" prefWidth="375.1999816894531" text="Users" />
+                <TableColumn fx:id="usersColumn" prefWidth="375.1999816894531" text="Users" />
               </columns>
             </TableView>
             <Button fx:id="applyButton" layoutX="261.0" layoutY="575.0" mnemonicParsing="false" onAction="#applyButtonPress" prefHeight="25.0" prefWidth="124.0" text="Apply" visible="false" />
-            <Button fx:id="cancelButton" layoutX="131.0" layoutY="575.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="124.0" text="Cancel" visible="false" />
+            <Button fx:id="cancelButton" layoutX="131.0" layoutY="575.0" mnemonicParsing="false" onAction="#cancelButtonClick" prefHeight="25.0" prefWidth="124.0" text="Cancel" visible="false" />
             <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="279.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
             <Label fx:id="accessedTasksLabel" layoutX="208.0" layoutY="122.0" text="Accessed tasks" visible="false" />
             <CheckBox fx:id="rootAccessCheckBox" layoutX="17.0" layoutY="237.0" mnemonicParsing="false" text="Root access (Selected tasks)" visible="false" />
@@ -101,14 +101,14 @@
             <TextField fx:id="salaryEdit" layoutX="17.0" layoutY="197.0" prefHeight="25.0" prefWidth="171.0" visible="false" />
             <TableView fx:id="permissionTable" layoutX="22.0" layoutY="326.0" prefHeight="156.0" prefWidth="360.0" visible="false">
               <columns>
-                <TableColumn prefWidth="372.199987411499" text="Permissions" />
+                <TableColumn fx:id="permissionColumn" prefWidth="372.199987411499" text="Permissions" />
               </columns>
             </TableView>
 
             <Label fx:id="addPermissionLabel" layoutX="22.0" layoutY="483.0" text="Add permission" visible="false" />
             <TextField fx:id="addPermissionEdit" layoutX="22.0" layoutY="501.0" prefHeight="25.0" prefWidth="278.0" visible="false" />
-            <Button fx:id="addPermissionButton" layoutX="307.0" layoutY="501.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="76.0" text="Add" visible="false" />
-            <Button fx:id="deletePermissionButton" layoutX="308.0" layoutY="536.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="76.0" text="Delete" visible="false" />
+            <Button fx:id="addPermissionButton" layoutX="307.0" layoutY="501.0" mnemonicParsing="false" onAction="#addPermissionButtonClick" prefHeight="25.0" prefWidth="76.0" text="Add" visible="false" />
+            <Button fx:id="deletePermissionButton" layoutX="308.0" layoutY="536.0" mnemonicParsing="false" onAction="#deletePermissionButtonClick" prefHeight="25.0" prefWidth="76.0" text="Delete" visible="false" />
             <Label fx:id="deletePermissionLabel" layoutX="147.0" layoutY="540.0" text="Choose permission to delete" visible="false" />
             <Label fx:id="moderatorRangLabel" layoutX="22.0" layoutY="326.0" text="Moderator rang" visible="false" />
             <TextField fx:id="moderatorRangEdit" layoutX="22.0" layoutY="344.0" prefHeight="25.0" prefWidth="359.0" visible="false" />
@@ -121,6 +121,11 @@
                   <CheckBox fx:id="accessedTasksCheckBox" layoutX="13.0" layoutY="17.0" mnemonicParsing="false" onAction="#checkAllTasks" text="Accessed tasks" />
                </children>
             </Pane>
+            <Button fx:id="createBtn" layoutX="403.0" layoutY="575.0" mnemonicParsing="false" onAction="#createBtnClick" prefHeight="25.0" prefWidth="87.0" text="Create" />
+            <Button fx:id="deleteBtn" layoutX="495.0" layoutY="575.0" mnemonicParsing="false" onAction="#deleteBtnClick" prefHeight="25.0" prefWidth="87.0" text="Delete" />
+            <Button fx:id="updateBtn" layoutX="587.0" layoutY="575.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="87.0" text="Update" />
+            <Button fx:id="ShowBtn" layoutX="704.0" layoutY="575.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="87.0" text="Show" />
+            <Label fx:id="showLabel" layoutX="16.0" layoutY="35.0" text="Label" visible="false" />
          </children>
       </Pane>
    </left>

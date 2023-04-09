@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 public class Developer extends User {
 
+    public void setTransactions(ArrayList<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
     private ArrayList<Transaction> transactions;
     private String wallet;
     private Stats stats;
