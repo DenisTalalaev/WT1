@@ -3,8 +3,18 @@ package com.oop.project;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ObservableValueBase;
 
-public class Perm {
+import java.io.Serializable;
+
+public class Perm  implements Serializable {
     public String name = "";
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Perm(String permission) {
         name = permission;

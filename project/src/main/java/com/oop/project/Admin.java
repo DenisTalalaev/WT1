@@ -1,21 +1,18 @@
 package com.oop.project;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Set;
 
-public class Admin extends User {
-    private boolean isRoot;
-    private double salary = 0;
-    private ArrayList<Integer> taskIDs;
+public class Admin extends User implements Serializable {
+    public boolean isRoot = false;
+    public double salary = 0;
+    public ArrayList<Integer> taskIDs = new ArrayList<>();
 
-    Admin() {
-        isRoot = false;
-        User user = new User();
-        taskIDs = new ArrayList<>();
-        super.setName(user.getName());
-        super.setBirth(user.getBirth());
-    }
+
+
+    Admin() {}
 
     public Admin(User user, boolean isRoot) {
         super.setBirth(user.getBirth());
@@ -43,7 +40,11 @@ public class Admin extends User {
     }
 
     public void setSalary(String salary) {
-        this.salary = Double.parseDouble(salary);
+        try {
+            this.salary = Double.parseDouble(salary);
+        } catch (NumberFormatException e){
+            this.salary = 0;
+        }
     }
     public void setSalary(double salary) {
         this.salary = salary;

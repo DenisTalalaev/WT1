@@ -1,16 +1,22 @@
 package com.oop.project;
 
-public class Stats {
-    private int countReview;
-    private int countTasks;
+import java.io.Serializable;
+
+public class Stats implements Serializable {
+    public int countReview = 0;
+    public int countTasks = 0;
+
+    public Stats(){    }
+
+
 
     public Stats(int countReview, int countTasks) {
         this.countReview = countReview;
         this.countTasks = countTasks;
     }
     public Stats(String countReview, String countTasks) {
-        this.countReview = Integer.parseInt(countReview);
-        this.countTasks = Integer.parseInt(countTasks);
+        this.countReview = countReview.equalsIgnoreCase("")?0:Integer.parseInt(countReview);
+        this.countTasks = countTasks.equalsIgnoreCase("")?0:Integer.parseInt(countTasks);
     }
 
     @Override

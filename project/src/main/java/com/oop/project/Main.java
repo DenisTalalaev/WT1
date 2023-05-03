@@ -12,10 +12,11 @@ import java.io.IOException;
 public class Main extends Application {
 
     protected CRUD crud = new CRUD();
+    public Stage mainStage;
 
     @Override
     public void start(Stage stage) throws IOException {
-
+        mainStage  = stage;
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 805, 640);
         stage.setTitle("OOP");

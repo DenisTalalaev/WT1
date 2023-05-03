@@ -1,18 +1,41 @@
 package com.oop.project;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Task {
-    private String name;
-    private String about;
-    private double rewardPerTask;
-    private double rewardPerReview;
-    private int index;
+public class Task implements Serializable {
+    public String name;
+    public String about;
+    public double rewardPerTask;
+    public double rewardPerReview;
+    public int index;
 
     public static final Task nightSky = new Task();
     public static final Task moonDance = new Task();
     public static final Task sunShine = new Task();
     public static final Task acade = new Task();
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
+    public void setRewardPerTask(double rewardPerTask) {
+        this.rewardPerTask = rewardPerTask;
+    }
+
+    public void setRewardPerReview(double rewardPerReview) {
+        this.rewardPerReview = rewardPerReview;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public Task(){}
 
     public static String taskNamesByList(ArrayList<Integer> ids){
         String string = "";

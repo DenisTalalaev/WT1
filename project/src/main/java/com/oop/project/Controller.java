@@ -3,14 +3,14 @@ package com.oop.project;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.AccessibleAction;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 
-import java.security.Permission;
+import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Comparator;
 
 public class Controller extends Main {
@@ -193,29 +193,160 @@ public class Controller extends Main {
     @FXML
     private Label walletToLabel;
 
-   @FXML
+    @FXML
     private ScrollPane showPanel;
+
+    @FXML
+    private MenuItem saveAsBinaryBtn;
+
+    @FXML
+    private MenuItem saveAsXMLBtn;
+
+    @FXML
+    private MenuItem saveAsTextBtn;
+
+    @FXML
+    private MenuItem openAsBinaryBtn;
+
+    @FXML
+    private MenuItem openAsXMLBtn;
+
+    @FXML
+    private MenuItem openAsTextBtn;
+
+    @FXML
+    private void saveAsBinaryBtnClick() {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter =
+                new FileChooser.ExtensionFilter("Бинарные файлы", "*.bin");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File file = fileChooser.showSaveDialog(mainStage);
+        if (file != null) {
+            BinaryDataController.saveDataToFile(crud.getUsers(), file);
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("Загрузка");
+            alert.setContentText("Данные сохранены в файл!");
+            alert.showAndWait();
+        }
+    }
+
+    @FXML
+    private void openAsBinaryBtnClick(){
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Бинарные файлы", "*.bin");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File file = fileChooser.showOpenDialog(mainStage);
+        if (file != null) {
+            crud.setUsers(BinaryDataController.loadDataFromFile(file));
+            reloadTable();
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("Загрузка");
+            alert.setContentText("Данные загружены из файла!");
+
+            alert.showAndWait();
+
+        }
+    }
+
+    @FXML
+    private void saveAsTextBtnClick(){
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Текстовые файлы", "*.txt");
+
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File file = fileChooser.showSaveDialog(mainStage);
+        if (file != null) {
+            TextDataController.saveDataToFile(crud.getUsers(), file);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("Загрузка");
+            alert.setContentText("Данные сохранены в файл!");
+            alert.showAndWait();
+        }
+
+    }
+
+    @FXML
+    private void openAsTextBtnClick(){
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Текстовые файлы", "*.txt");
+
+
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File file = fileChooser.showOpenDialog(mainStage);
+        if (file != null) {
+            crud.setUsers(TextDataController.loadDataFromFile(file));
+            reloadTable();
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("Загрузка");
+            alert.setContentText("Данные загружены из файла!");
+
+            alert.showAndWait();
+
+        }
+    }
+
+    @FXML
+    private void saveAsXMLBtnClick(){
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON файлы", "*.json");
+
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File file = fileChooser.showSaveDialog(mainStage);
+        if (file != null) {
+            JSONDataController.saveDataToFile(crud.getUsers(), file);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("Загрузка");
+            alert.setContentText("Данные сохранены в файл!");
+            alert.showAndWait();
+        }
+
+    }
+
+    @FXML
+    private void openAsXMLBtnClick(){
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON файлы", "*.json");
+
+
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File file = fileChooser.showOpenDialog(mainStage);
+        if (file != null) {
+            crud.setUsers(JSONDataController.loadDataFromFile(file));
+            reloadTable();
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("Загрузка");
+            alert.setContentText("Данные загружены из файла!");
+
+            alert.showAndWait();
+
+        }
+
+    }
+
 
 
     @FXML
-    private void showUserButtonClick(){
+    private void showUserButtonClick() {
         showLabel.setText("");
         showLabel.setVisible(true);
         User user = usersTable.getSelectionModel().getSelectedItem();
-        if(user instanceof Developer){
-            for (String str: ((Developer)user).toStringArrayList()
-                 ) {
-                showLabel.setText(showLabel.getText() + str);
-            }
-        }
-
-        if(user instanceof TechnicalAdmin){
-            showLabel.setText(((TechnicalAdmin) user).toString());
-        }
-
-        if(user instanceof Moderator){
-            showLabel.setText(((Moderator) user).toString());
-        }
+        showLabel.setText(user.toString());
     }
 
     @FXML
@@ -245,65 +376,17 @@ public class Controller extends Main {
         User user = usersTable.getSelectionModel().getSelectedItem();
         userBuffer = user;
         action = Action.UPDATE_USER;
-        loadUser(user);
-    }
-
-    private void loadUser(User user) {
-        setUserUIVisible(true);
-        nameField.setText(user.getName().split(":")[1].trim());
-        birthDateEdite.setValue(user.getBirth());
-        if (user instanceof Admin) {
-            userTypeDropBox.setValue(userTypeDropBox.getItems().get(1));
-            setAdminUIVisible(true);
-            salaryEdit.setText(String.valueOf(((Admin) user).getSalary()));
-            rootAccessCheckBox.setSelected(((Admin) user).isRoot());
-            if (((Admin) user).getTaskIDs().contains(Task.nightSky.getIndex())) {
-                nightSkyCheckBox.setSelected(true);
-            } else {
-                nightSkyCheckBox.setSelected(false);
-            }
-            if (((Admin) user).getTaskIDs().contains(Task.moonDance.getIndex())) {
-                moonDanceCheckBox.setSelected(true);
-            } else {
-                moonDanceCheckBox.setSelected(false);
-            }
-            if (((Admin) user).getTaskIDs().contains(Task.acade.getIndex())) {
-                acadeCheckBox.setSelected(true);
-            } else {
-                acadeCheckBox.setSelected(false);
-            }
-            if (((Admin) user).getTaskIDs().contains(Task.sunShine.getIndex())) {
-                sunShineCheckBox.setSelected(true);
-            } else {
-                sunShineCheckBox.setSelected(false);
-            }
-            if (user instanceof TechnicalAdmin) {
-                setTechnicalAdminUIVisible(true);
-                adminTypeDropBox.setValue(adminTypeDropBox.getItems().get(0));
-                permissionsList.addAll(((TechnicalAdmin) user).getPermissoins());
-            } else if (user instanceof Moderator) {
-                setModeratorUIVisible(true);
-                adminTypeDropBox.setValue(adminTypeDropBox.getItems().get(1));
-                moderatorRangEdit.setText(String.valueOf(((Moderator) user).getRang()));
-            }
-        } else if (user instanceof Developer) {
-            setDeveloperUIVisible(true);
-            userTypeDropBox.setValue(userTypeDropBox.getItems().get(0));
-            reviewCountEdit.setText(String.valueOf(((Developer) user).getStats().getCountReview()));
-            taskCountEdit.setText(String.valueOf(((Developer) user).getStats().getCountTasks()));
-            walletEdit.setText(((Developer) user).getWallet());
-            transactionData.addAll(((Developer) user).getTransactions());
-
-        }
+        createLoadUserHelper(user);
         applyCancelButtonsVisible(true);
     }
 
-    private ObservableList<Transaction> transactionData = FXCollections.observableArrayList();
-    private ObservableList<User> userObservableList = FXCollections.observableArrayList();
-    private ObservableList<Perm> permissionsList = FXCollections.observableArrayList();
 
+    private final ObservableList<Transaction> transactionData = FXCollections.observableArrayList();
+    private final ObservableList<User> userObservableList = FXCollections.observableArrayList();
+    private final ObservableList<Perm> permissionsList = FXCollections.observableArrayList();
 
     public void initialize() {
+        Task.initialiseTasks();
         transactionsTable.setItems(transactionData);
 
         tableColumnFROM.setCellValueFactory(cellData -> cellData.getValue().fromProperty());
@@ -324,18 +407,25 @@ public class Controller extends Main {
         userObservableList.sort(Comparator.comparing(User::getName));
     }
 
+    public void reloadTable(){
+        userObservableList.clear();
+        for (User us : crud.getUsers()
+        ) {
+            userObservableList.add(us);
+        }
+        usersTable.refresh();
+    }
+
     @FXML
     private void addPermissionButtonClick() {
         permissionsList.add(new Perm(addPermissionEdit.getText().toString()));
     }
-
 
     @FXML
     private void deletePermissionButtonClick() {
         Perm selected = permissionTable.getSelectionModel().getSelectedItem();
         permissionsList.remove(selected);
     }
-
 
     @FXML
     private void deleteTransactionButtonClick() {
@@ -350,15 +440,12 @@ public class Controller extends Main {
         action = Action.SHOW_USER;
     }
 
-
     @FXML
     private void addTransactionButtonClick() {
         walletFromEdit.setStyle(null);
         walletToEdit.setStyle(null);
         amountEdit.setStyle(null);
-        if (!isTransactionFieldFine()) {
-            return;
-        } else {
+        if (isTransactionFieldFine()) {
             Transaction transaction = new Transaction(walletFromEdit.getText(), walletToEdit.getText(), amountEdit.getText());
             transactionData.add(transaction);
             transactionsTable.setItems(transactionData);
@@ -392,14 +479,14 @@ public class Controller extends Main {
 
     private boolean isWalletFine(TextField edit) {
         boolean flag = true;
-        if (edit.getText().toString().length() == 0) {
+        if (edit.getText().length() == 0) {
             flag = false;
         } else {
-            if (edit.getText().toString().endsWith(".near")) {
-                if (edit.getText().toString().split("\\.").length != 2) {
+            if (edit.getText().endsWith(".near")) {
+                if (edit.getText().split("\\.").length != 2) {
                     flag = false;
                 }
-            } else if (edit.getText().toString().contains("\\.") || walletEdit.getText().toString().length() != 64) {
+            } else if (edit.getText().contains("\\.") || walletEdit.getText().length() != 64) {
                 flag = false;
             }
         }
@@ -416,37 +503,6 @@ public class Controller extends Main {
     }
 
     @FXML
-    void userTypeDropBoxChange() {
-        switch (userTypeDropBox.valueProperty().getValue().toString()) {
-            case "Developer":
-                loadDeveloperUI();
-                break;
-            case "Admin":
-                loadAdminUI();
-                break;
-            default:
-                return;
-        }
-    }
-
-    @FXML
-    void adminTypeDropBoxChange() {
-        try {
-            switch (adminTypeDropBox.valueProperty().getValue().toString()) {
-                case "TechnicalAdmin":
-                    loadTechnicalAdminUI();
-                    break;
-                case "Moderator":
-                    loadModeratorUI();
-                    break;
-                default:
-                    return;
-            }
-        } catch (Exception e) {
-        }
-    }
-
-    @FXML
     void checkAllTasks() {
         boolean status = accessedTasksCheckBox.isSelected();
         nightSkyCheckBox.setSelected(status);
@@ -458,43 +514,14 @@ public class Controller extends Main {
     @FXML
     void applyButtonPress() {
         resetShadows();
-        User user = null;
-        switch (userTypeDropBox.valueProperty().getValue().toString()) {
-            case "Developer":
-                if (!isDeveloperFieldsFine()) {
-                    return;
-                } else {
-                    user = UserFactory.createUser(UserType.DEVELOPER);
-                }
-                break;
-            case "Admin":
-                switch (adminTypeDropBox.valueProperty().getValue().toString()) {
-                    case "TechnicalAdmin":
-                        if (!isTechnicalAdminFieldsFine()) {
-                            return;
-                        } else {
-                            user = UserFactory.createUser(UserType.TECHNICAL_ADMIN);
-                        }
-                        break;
-                    case "Moderator":
-                        if (!isModeratorFieldsFine()) {
-                            return;
-                        } else {
-                            user = UserFactory.createUser(UserType.MODERATOR);
-                        }
-                        break;
-                }
-                break;
-            default:
-                return;
-        }
-
+        User user = UserFactory.createUser(userTypeDropBox.valueProperty().getValue());
+        boolean flag = true;
         switch (action) {
             case UPDATE_USER -> {
+                action = Action.CREATE_USER;
+                flag = createLoadUserHelper(user);
                 crud.deleteUser(userBuffer);
                 userObservableList.remove(userBuffer);
-                createUserHelper(user);
-
                 TableView.TableViewSelectionModel selectionModel = usersTable.getSelectionModel();
                 if (!selectionModel.isEmpty()) {
                     int index = selectionModel.getSelectedIndex();
@@ -502,56 +529,175 @@ public class Controller extends Main {
                         selectionModel.selectNext();
                     }
                 }
-
-                break;
             }
             case CREATE_USER -> {
-                createUserHelper(user);
-                break;
+                flag = createLoadUserHelper(user);
             }
         }
-
+        if (flag) {
+            clearFields();
+            hideElements();
+        }
     }
 
-    private void createUserHelper(User user) {
+    private boolean developerUIController(User user) {
+        if (action == Action.UPDATE_USER) {
+            return loadDeveloper(user);
+        } else {
+            return addDeveloper(user);
+        }
+    }
+
+    private boolean addDeveloper(User user) {
+        if (!isUserFieldsFine() | !isDeveloperFieldsFine()) return false;
         user.setName(nameField.getText());
         user.setBirth(birthDateEdite.getValue());
-        if (user instanceof Developer) {
-            ((Developer) user).setStat(new Stats(reviewCountEdit.getText(), taskCountEdit.getText()));
-            ((Developer) user).setWallet(walletEdit.getText());
-            for (Transaction transaction : transactionData
-            ) {
-                ((Developer) user).addTransaction(transaction);
-            }
-            crud.addDeveloper((Developer) user);
-        }
-        if (user instanceof Admin) {
-            ((Admin) user).setRoot(rootAccessCheckBox.isSelected());
-            ((Admin) user).setSalary(salaryEdit.getText());
-            ArrayList<Integer> taskIds = new ArrayList<>();
-            if (nightSkyCheckBox.isSelected()) taskIds.add(Task.nightSky.getIndex());
-            if (moonDanceCheckBox.isSelected()) taskIds.add(Task.moonDance.getIndex());
-            if (sunShineCheckBox.isSelected()) taskIds.add(Task.sunShine.getIndex());
-            if (acadeCheckBox.isSelected()) taskIds.add(Task.acade.getIndex());
-            ((Admin) user).setTaskIDs(taskIds);
-        }
-        if (user instanceof TechnicalAdmin) {
-            for (Perm perm : permissionsList
-            ) {
-                ((TechnicalAdmin) user).addPermission(perm);
-            }
-            crud.addTechnicalAdmin((TechnicalAdmin) user);
-        }
-        if (user instanceof Moderator) {
-            ((Moderator) user).setRang(moderatorRangEdit.getText());
-            crud.addModerator((Moderator) user);
+        ((Developer) user).setStat(new Stats(reviewCountEdit.getText(), taskCountEdit.getText()));
+        ((Developer) user).setWallet(walletEdit.getText());
+        for (Transaction transaction : transactionData
+        ) {
+            ((Developer) user).addTransaction(transaction);
         }
 
+        crud.addDeveloper((Developer) user);
         userObservableList.add(user);
         userObservableList.sort(Comparator.comparing(User::getName));
+        return true;
+    }
 
-        clearFields();
-        hideElements();
+    private boolean loadDeveloper(User user) {
+        setUserUIVisible(true);
+        setDeveloperUIVisible(true);
+
+        String userName = user.getName().split(":")[1].trim();
+        nameField.setText(userName);
+        birthDateEdite.setValue(user.getBirth());
+
+        userTypeDropBox.setValue(userTypeDropBox.getItems().get(0));
+        Developer developer = (Developer) user;
+        reviewCountEdit.setText(String.valueOf(developer.getStats().getCountReview()));
+        taskCountEdit.setText(String.valueOf(developer.getStats().getCountTasks()));
+        walletEdit.setText(developer.getWallet());
+        transactionData.addAll(developer.getTransactions());
+        return true;
+    }
+
+    private boolean moderatorUIController(User user) {
+        if (action == Action.UPDATE_USER) {
+            return loadModerator(user);
+        } else {
+            return addModerator(user);
+        }
+    }
+
+    private boolean addModerator(User user) {
+        if (!isUserFieldsFine() | !isAdminFieldsFine() | !isModeratorFieldsFine()) return false;
+        user.setName(nameField.getText());
+        user.setBirth(birthDateEdite.getValue());
+
+        ((Admin) user).setRoot(rootAccessCheckBox.isSelected());
+        ((Admin) user).setSalary(salaryEdit.getText());
+        ArrayList<Integer> taskIds = new ArrayList<>();
+        if (nightSkyCheckBox.isSelected()) taskIds.add(Task.nightSky.getIndex());
+        if (moonDanceCheckBox.isSelected()) taskIds.add(Task.moonDance.getIndex());
+        if (sunShineCheckBox.isSelected()) taskIds.add(Task.sunShine.getIndex());
+        if (acadeCheckBox.isSelected()) taskIds.add(Task.acade.getIndex());
+        ((Admin) user).setTaskIDs(taskIds);
+        ((Moderator) user).setRang(moderatorRangEdit.getText());
+
+        crud.addModerator((Moderator) user);
+        userObservableList.add(user);
+        userObservableList.sort(Comparator.comparing(User::getName));
+        return true;
+    }
+
+    private boolean loadModerator(User user) {
+        setUserUIVisible(true);
+        setAdminUIVisible(true);
+        setModeratorUIVisible(true);
+
+        String userName = user.getName().split(":")[1].trim();
+        nameField.setText(userName);
+        birthDateEdite.setValue(user.getBirth());
+
+        userTypeDropBox.setValue(userTypeDropBox.getItems().get(1));
+        salaryEdit.setText(String.valueOf(((Admin) user).getSalary()));
+        rootAccessCheckBox.setSelected(((Admin) user).isRoot());
+        System.out.println(userName);
+        System.out.println(Arrays.toString(((Admin) user).getTaskIDs().toArray()));
+        System.out.println(Task.nightSky.getIndex());
+        System.out.println(Task.moonDance.getIndex());
+        System.out.println(Task.acade.getIndex());
+        System.out.println(Task.sunShine.getIndex());
+        checkTaskCheckBox(nightSkyCheckBox, ((Admin) user).getTaskIDs(), Task.nightSky.getIndex());
+        checkTaskCheckBox(moonDanceCheckBox, ((Admin) user).getTaskIDs(), Task.moonDance.getIndex());
+        checkTaskCheckBox(acadeCheckBox, ((Admin) user).getTaskIDs(), Task.acade.getIndex());
+        checkTaskCheckBox(sunShineCheckBox, ((Admin) user).getTaskIDs(), Task.sunShine.getIndex());
+        try {
+            userTypeDropBox.setValue(userTypeDropBox.getItems().get(1));
+        } catch (Exception e) {
+        }
+        moderatorRangEdit.setText(String.valueOf(((Moderator) user).getRang()));
+        return true;
+    }
+
+    private void checkTaskCheckBox(CheckBox checkBox, ArrayList<Integer> taskIds, int taskId) {
+        checkBox.setSelected(taskIds.contains(taskId));
+    }
+
+    public boolean technicalAdminUIController(User user) {
+        if (action == Action.UPDATE_USER) {
+            return loadTechnicalAdmin(user);
+        } else if (action == Action.CREATE_USER) {
+            return addTechnicalAdmin(user);
+        }
+        return true;
+    }
+
+    private boolean addTechnicalAdmin(User user) {
+        if (!isUserFieldsFine() | !isAdminFieldsFine() | !isTechnicalAdminFieldsFine()) return false;
+        user.setName(nameField.getText());
+        user.setBirth(birthDateEdite.getValue());
+
+        ((Admin) user).setRoot(rootAccessCheckBox.isSelected());
+        ((Admin) user).setSalary(salaryEdit.getText());
+        ArrayList<Integer> taskIds = new ArrayList<>();
+        if (nightSkyCheckBox.isSelected()) taskIds.add(Task.nightSky.getIndex());
+        if (moonDanceCheckBox.isSelected()) taskIds.add(Task.moonDance.getIndex());
+        if (sunShineCheckBox.isSelected()) taskIds.add(Task.sunShine.getIndex());
+        if (acadeCheckBox.isSelected()) taskIds.add(Task.acade.getIndex());
+        ((Admin) user).setTaskIDs(taskIds);
+
+        for (Perm perm : permissionsList
+        ) {
+            ((TechnicalAdmin) user).addPermission(perm);
+        }
+        crud.addTechnicalAdmin((TechnicalAdmin) user);
+        userObservableList.add(user);
+        userObservableList.sort(Comparator.comparing(User::getName));
+        return true;
+    }
+
+    private boolean loadTechnicalAdmin(User user) {
+        setUserUIVisible(true);
+        setAdminUIVisible(true);
+        setTechnicalAdminUIVisible(true);
+
+        String userName = user.getName().split(":")[1].trim();
+        nameField.setText(userName);
+        birthDateEdite.setValue(user.getBirth());
+
+        userTypeDropBox.setValue(userTypeDropBox.getItems().get(1));
+        salaryEdit.setText(String.valueOf(((Admin) user).getSalary()));
+        rootAccessCheckBox.setSelected(((Admin) user).isRoot());
+        checkTaskCheckBox(nightSkyCheckBox, ((Admin) user).getTaskIDs(), Task.nightSky.getIndex());
+        checkTaskCheckBox(moonDanceCheckBox, ((Admin) user).getTaskIDs(), Task.moonDance.getIndex());
+        checkTaskCheckBox(acadeCheckBox, ((Admin) user).getTaskIDs(), Task.acade.getIndex());
+        checkTaskCheckBox(sunShineCheckBox, ((Admin) user).getTaskIDs(), Task.sunShine.getIndex());
+
+        userTypeDropBox.setValue(userTypeDropBox.getItems().get(1));
+        permissionsList.addAll(((TechnicalAdmin) user).getPermissions());
+        return true;
     }
 
     private void hideElements() {
@@ -703,45 +849,6 @@ public class Controller extends Main {
         return flag;
     }
 
-
-    private void loadModeratorUI() {
-        setDeveloperUIVisible(false);
-        setTechnicalAdminUIVisible(false);
-        setAdminUIVisible(true);
-        setModeratorUIVisible(true);
-        applyCancelButtonsVisible(true);
-    }
-
-    private void loadTechnicalAdminUI() {
-        setDeveloperUIVisible(false);
-        setModeratorUIVisible(false);
-        setAdminUIVisible(true);
-        setTechnicalAdminUIVisible(true);
-        applyCancelButtonsVisible(true);
-    }
-
-    private void loadAdminUI() {
-        accessedTasksCheckBox.setSelected(false);
-        nightSkyCheckBox.setSelected(false);
-        moonDanceCheckBox.setSelected(false);
-        sunShineCheckBox.setSelected(false);
-        acadeCheckBox.setSelected(false);
-
-        setDeveloperUIVisible(false);
-        setModeratorUIVisible(false);
-        setTechnicalAdminUIVisible(false);
-        setAdminUIVisible(true);
-        applyCancelButtonsVisible(false);
-    }
-
-    private void loadDeveloperUI() {
-        setTechnicalAdminUIVisible(false);
-        setModeratorUIVisible(false);
-        setAdminUIVisible(false);
-        setDeveloperUIVisible(true);
-        applyCancelButtonsVisible(true);
-    }
-
     private void setModeratorUIVisible(boolean status) {
         moderatorRangEdit.setVisible(status);
         moderatorRangLabel.setVisible(status);
@@ -758,12 +865,8 @@ public class Controller extends Main {
 
     private void setAdminUIVisible(boolean status) {
         if (!status) {
-            adminTypeDropBox.getSelectionModel().clearSelection();
             rootAccessCheckBox.selectedProperty().set(false);
-
         }
-        adminTypeDropBox.visibleProperty().set(status);
-        adminTypeLabel.setVisible(status);
         salaryEdit.setVisible(status);
         salaryLabel.setVisible(status);
         accessedTasksLabel.setVisible(status);
@@ -797,5 +900,30 @@ public class Controller extends Main {
         cancelButton.setVisible(status);
     }
 
+    private boolean createLoadUserHelper(User user) {
+        switch (user.userType) {
+            case TECHNICAL_ADMIN -> {
+                return technicalAdminUIController(user);
+            }
+            case MODERATOR -> {
+                return moderatorUIController(user);
+            }
+            case DEVELOPER -> {
+                return developerUIController(user);
+            }
+        }
+        return false;
+    }
+
+    @FXML
+    void userTypeDropBoxChange() {
+        action = Action.UPDATE_USER;
+        hideElements();
+        clearFields();
+        User user = UserFactory.createUser(userTypeDropBox.valueProperty().getValue());
+        createLoadUserHelper(user);
+        action = Action.CREATE_USER;
+        applyCancelButtonsVisible(true);
+    }
 
 }

@@ -14,7 +14,6 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 
@@ -22,19 +21,18 @@
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
-          <Menu mnemonicParsing="false" text="File">
+          <Menu mnemonicParsing="false" text="save">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
+              <MenuItem fx:id="saveAsBinaryBtn" mnemonicParsing="false" onAction="#saveAsBinaryBtnClick" text="save as binary" />
+                  <MenuItem fx:id="saveAsXMLBtn" mnemonicParsing="false" onAction="#saveAsXMLBtnClick" text="save as JSON" />
+                  <MenuItem fx:id="saveAsTextBtn" mnemonicParsing="false" onAction="#saveAsTextBtnClick" text="save as text" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
+          <Menu mnemonicParsing="false" text="open">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem fx:id="openAsBinaryBtn" mnemonicParsing="false" onAction="#openAsBinaryBtnClick" text="open as binary" />
+                  <MenuItem fx:id="openAsXMLBtn" mnemonicParsing="false" onAction="#openAsXMLBtnClick" text="open as JSON" />
+                  <MenuItem fx:id="openAsTextBtn" mnemonicParsing="false" onAction="#openAsTextBtnClick" text="open as Text" />
             </items>
           </Menu>
         </menus>
@@ -44,28 +42,20 @@
       <Pane prefHeight="614.0" prefWidth="802.0" BorderPane.alignment="CENTER">
          <children>
             <Label fx:id="nameLabel" layoutX="14.0" layoutY="14.0" text="Name" visible="false" />
-             <ComboBox fx:id="userTypeDropBox" accessibleText="dddsss" layoutX="14.0" layoutY="144.0" onAction="#userTypeDropBoxChange" prefHeight="25.0" prefWidth="176.0" visible="false">
+             <ComboBox fx:id="userTypeDropBox" accessibleText="dddsss" layoutX="14.0" layoutY="139.0" onAction="#userTypeDropBoxChange" prefHeight="25.0" prefWidth="176.0" visible="false">
                  <items>
                      <FXCollections fx:factory="observableArrayList">
                          <String fx:value="Developer" />
-                         <String fx:value="Admin" />
+                         <String fx:value="TechnicalAdmin" />
+                         <String fx:value="Moderator" />
                      </FXCollections>
                  </items>
              </ComboBox>
             <TextField fx:id="nameField" layoutX="15.0" layoutY="31.0" prefHeight="25.0" prefWidth="248.0" visible="false" />
             <DatePicker fx:id="birthDateEdite" layoutX="15.0" layoutY="88.0" prefHeight="25.0" prefWidth="249.0" visible="false" />
             <Label fx:id="birthDateLabel" layoutX="14.0" layoutY="63.0" text="Birth date" visible="false" />
-            <ComboBox fx:id="adminTypeDropBox" accessibleText="dddsss" layoutX="19.0" layoutY="290.0" onAction="#adminTypeDropBoxChange" prefHeight="25.0" prefWidth="176.0" visible="false">
-               <items>
-                  <FXCollections fx:factory="observableArrayList">
-                     <String fx:value="TechnicalAdmin" />
-                     <String fx:value="Moderator" />
-                  </FXCollections>
-               </items>
-            </ComboBox>
             <TextField fx:id="reviewCountEdit" layoutX="15.0" layoutY="200.0" prefHeight="25.0" prefWidth="178.0" visible="false" />
             <Label fx:id="userTypeLabel" layoutX="14.0" layoutY="121.0" text="User type" visible="false" />
-            <Label fx:id="adminTypeLabel" layoutX="18.0" layoutY="267.0" text="Admin type" visible="false" />
             <Label fx:id="reviewCountLabel" layoutX="14.0" layoutY="178.0" text="Review count" visible="false" />
             <TextField fx:id="taskCountEdit" layoutX="208.0" layoutY="200.0" prefHeight="25.0" prefWidth="173.0" visible="false" />
             <Label fx:id="taskCountLabel" layoutX="207.0" layoutY="177.0" text="Task count" visible="false" />
@@ -95,7 +85,6 @@
             </TableView>
             <Button fx:id="applyButton" layoutX="261.0" layoutY="575.0" mnemonicParsing="false" onAction="#applyButtonPress" prefHeight="25.0" prefWidth="124.0" text="Apply" visible="false" />
             <Button fx:id="cancelButton" layoutX="131.0" layoutY="575.0" mnemonicParsing="false" onAction="#cancelButtonClick" prefHeight="25.0" prefWidth="124.0" text="Cancel" visible="false" />
-            <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="279.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
             <Label fx:id="accessedTasksLabel" layoutX="208.0" layoutY="122.0" text="Accessed tasks" visible="false" />
             <CheckBox fx:id="rootAccessCheckBox" layoutX="17.0" layoutY="237.0" mnemonicParsing="false" text="Root access (Selected tasks)" visible="false" />
             <Label fx:id="salaryLabel" layoutX="17.0" layoutY="179.0" text="Salary" visible="false" />

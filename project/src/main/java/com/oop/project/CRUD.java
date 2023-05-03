@@ -1,19 +1,25 @@
 package com.oop.project;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class CRUD {
+public class CRUD implements Serializable {
+
+
 
     public ArrayList<User> getUsers() {
         return users;
     }
 
-    private ArrayList<User> users = new ArrayList<>();
+    public ArrayList<User> users = new ArrayList<>();
 
-    public CRUD() {
-        Task.initialiseTasks();
+    public void setUsers(ArrayList<User> newUsers) {
+        users.clear();
+        users.addAll(newUsers);
     }
+
+    public CRUD() {}
 
     public void hardInitialise() {
         //Developers
@@ -117,4 +123,7 @@ public class CRUD {
     }
 
 
+    public void add(User user) {
+        users.add(user);
+    }
 }

@@ -3,16 +3,20 @@ package com.oop.project;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ObservableValueBase;
 
-public class Transaction {
-    private double amount;
-    private String walletTo;
-    private String walletFrom;
+import java.io.Serializable;
+
+public class Transaction implements Serializable {
+    public double amount;
+    public String walletTo;
+    public String walletFrom;
 
     public Transaction(String walletFrom, String walletTo, String amount) {
         this.amount = Double.parseDouble(amount);
         this.walletTo = walletTo;
         this.walletFrom = walletFrom;
     }
+
+
 
     public Transaction() {
     }

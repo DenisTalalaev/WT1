@@ -3,7 +3,7 @@ package com.oop.project;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ObservableValueBase;
 
-import java.text.SimpleDateFormat;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -12,9 +12,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Random;
 
-class User{
-    private String name;
-    private LocalDate birth;
+public class User implements Serializable {
+    public String name;
+    public LocalDate birth;
+    public UserType userType;
 
     @Override
     public String toString() {
@@ -29,13 +30,18 @@ class User{
         this.name = userName;
         this.birth = birthday;
     }
-    User(){
-        this.name = "unknown";
-        this.birth = generateRandomDate();
-    }
+    User(){}
 
     public LocalDate getBirth() {
         return birth;
+    }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
     }
 
     public String getName() {
@@ -88,4 +94,5 @@ class User{
             }
         };
     }
+
 }

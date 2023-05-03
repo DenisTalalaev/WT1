@@ -1,11 +1,16 @@
 package com.oop.project;
 
-public class Moderator extends Admin {
-    private int rang;
+import java.io.Serializable;
+
+public class Moderator extends Admin implements Serializable {
+    public int rang = 0;
+
+    public Moderator(){this.userType = UserType.MODERATOR;}
 
     public int getRang() {
         return rang;
     }
+
 
     public void setRang(int rang) {
         this.rang = rang;

@@ -1,17 +1,17 @@
 package com.oop.project;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Developer extends User {
+public class Developer extends User implements Serializable {
 
     public void setTransactions(ArrayList<Transaction> transactions) {
         this.transactions = transactions;
     }
 
-    private ArrayList<Transaction> transactions;
-    private String wallet;
-    private Stats stats;
-
+    public ArrayList<Transaction> transactions = new ArrayList<>();
+    public String wallet = "";
+    public Stats stats = new Stats();
 
 
     public Stats getStats() {
@@ -23,15 +23,13 @@ public class Developer extends User {
         this.transactions = new ArrayList<>();
         this.stats = new Stats(0, 0);
         this.wallet = "near.near";
+        userType = UserType.DEVELOPER;
     }
 
-    Developer() {
-        User user = new User();
-        this.setBirth(user.getBirth());
-        this.setName(user.getName());
-        this.transactions = new ArrayList<>();
-        this.stats = new Stats(0, 0);
-        this.wallet = "near.near";
+    Developer() {this.userType = UserType.DEVELOPER;}
+
+    public void setStats(Stats stats) {
+        this.stats = stats;
     }
 
     Developer(User user, String wallet) {
@@ -40,6 +38,7 @@ public class Developer extends User {
         this.transactions = new ArrayList<>();
         this.stats = new Stats(0, 0);
         this.wallet = wallet;
+        userType = UserType.DEVELOPER;
     }
 
     Developer(String wallet) {
@@ -49,6 +48,7 @@ public class Developer extends User {
         this.transactions = new ArrayList<>();
         this.stats = new Stats(0, 0);
         this.wallet = wallet;
+        userType = UserType.DEVELOPER;
     }
 
     public void addTransaction(Transaction transaction) {
@@ -71,15 +71,15 @@ public class Developer extends User {
         this.wallet = wallet;
     }
 
-    public ArrayList<String> toStringArrayList() {
-        ArrayList<String> string = new ArrayList<>();
-        string.add(super.toString());
-        string.add("Wallet: " + this.wallet + "\n");
-        string.add("Stats: " + this.stats.toString() + "\n");
-        string.add("Transacions:\n");
+    public String toString() {
+        StringBuilder string = new StringBuilder();
+        string.append(super.toString());
+        string.append("Wallet: " + this.wallet + "\n");
+        string.append("Stats: " + this.stats.toString() + "\n");
+        string.append("Transactions:\n");
         for (Transaction transaction : this.transactions) {
-            string.add("\t" + transaction.toString() + "\n");
+            string.append("\t" + transaction.toString() + "\n");
         }
-        return string;
+        return string.toString();
     }
 }
