@@ -13,7 +13,11 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 
-public class JSONDataController implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
+public class JSONDataController extends SerializeController implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate>  {
+
+    public JSONDataController(){
+        ext = "json";
+    }
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final RuntimeTypeAdapterFactory<User> typeAdapterFactory = RuntimeTypeAdapterFactory.of(User.class, "type")
@@ -24,8 +28,8 @@ public class JSONDataController implements JsonSerializer<LocalDate>, JsonDeseri
             .registerTypeAdapter(LocalDate.class, new JSONDataController())
             .registerTypeAdapterFactory(typeAdapterFactory)
             .create();
-
-    public static void saveDataToFile(ArrayList<User> users, File file) {
+    @Override
+    public void saveDataToFile(ArrayList<User> users, File file) {
         Type type = new TypeToken<ArrayList<User>>() {}.getType();
         try (FileWriter fw = new FileWriter(file)) {
             gson.toJson(users, type, fw);
@@ -33,8 +37,8 @@ public class JSONDataController implements JsonSerializer<LocalDate>, JsonDeseri
             System.err.println(e.getMessage());
         }
     }
-
-    public static ArrayList<User> loadDataFromFile(File file) {
+    @Override
+    public ArrayList<User> loadDataFromFile(File file) {
         ArrayList<User> users = new ArrayList<User>();
         Type type = new TypeToken<ArrayList<User>>() {}.getType();
         try (FileReader fr = new FileReader(file)) {

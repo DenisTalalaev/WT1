@@ -21,18 +21,10 @@
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
-          <Menu mnemonicParsing="false" text="save">
+          <Menu mnemonicParsing="false" text="file">
             <items>
-              <MenuItem fx:id="saveAsBinaryBtn" mnemonicParsing="false" onAction="#saveAsBinaryBtnClick" text="save as binary" />
-                  <MenuItem fx:id="saveAsXMLBtn" mnemonicParsing="false" onAction="#saveAsXMLBtnClick" text="save as JSON" />
-                  <MenuItem fx:id="saveAsTextBtn" mnemonicParsing="false" onAction="#saveAsTextBtnClick" text="save as text" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="open">
-            <items>
-              <MenuItem fx:id="openAsBinaryBtn" mnemonicParsing="false" onAction="#openAsBinaryBtnClick" text="open as binary" />
-                  <MenuItem fx:id="openAsXMLBtn" mnemonicParsing="false" onAction="#openAsXMLBtnClick" text="open as JSON" />
-                  <MenuItem fx:id="openAsTextBtn" mnemonicParsing="false" onAction="#openAsTextBtnClick" text="open as Text" />
+              <MenuItem mnemonicParsing="false" onAction="#saveBtnClick" text="save" />
+              <MenuItem fx:id="openAsBinaryBtn" mnemonicParsing="false" onAction="#loadFromFileBtnCLick" text="open" />
             </items>
           </Menu>
         </menus>

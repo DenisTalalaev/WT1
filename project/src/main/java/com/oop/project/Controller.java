@@ -9,9 +9,8 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
+import java.util.concurrent.CompletionService;
 
 public class Controller extends Main {
     enum Action {
@@ -214,16 +213,41 @@ public class Controller extends Main {
     @FXML
     private MenuItem openAsTextBtn;
 
+
+    ArrayList<SerializeController> serializers = new ArrayList<>();
+
+
     @FXML
-    private void saveAsBinaryBtnClick() {
+    private void saveBtnClick(){
+
+        serializers.add(new BinaryDataController());
+        serializers.add(new TextDataController());
+        serializers.add(new JSONDataController());
+
+
         FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter =
+
+        // Добавляем фильтры расширений файлов
+        FileChooser.ExtensionFilter txtFilter =
+                new FileChooser.ExtensionFilter("Текстовые файлы", "*.txt");
+        FileChooser.ExtensionFilter jsonFilter =
+                new FileChooser.ExtensionFilter("JSON файлы", "*.json");
+        FileChooser.ExtensionFilter binFilter =
                 new FileChooser.ExtensionFilter("Бинарные файлы", "*.bin");
-        fileChooser.getExtensionFilters().add(extFilter);
+        fileChooser.getExtensionFilters().addAll(txtFilter, jsonFilter, binFilter);
 
         File file = fileChooser.showSaveDialog(mainStage);
         if (file != null) {
-            BinaryDataController.saveDataToFile(crud.getUsers(), file);
+            String extension = file.getName().substring(1 + file.getName().lastIndexOf("."));
+            SerializeController serializeController;
+            for (SerializeController controller: serializers
+                 ) {
+                if(extension.equalsIgnoreCase(controller.ext)){
+                    serializeController = controller;
+                    serializeController.saveDataToFile(crud.getUsers(), file);
+                    break;
+                }
+            }
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Information Dialog");
@@ -233,113 +257,49 @@ public class Controller extends Main {
         }
     }
 
+
     @FXML
-    private void openAsBinaryBtnClick(){
+    private void loadFromFileBtnCLick(){
+
+        serializers.add(new BinaryDataController());
+        serializers.add(new TextDataController());
+        serializers.add(new JSONDataController());
+
+
         FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Бинарные файлы", "*.bin");
-        fileChooser.getExtensionFilters().add(extFilter);
+
+        // Добавляем фильтры расширений файлов
+        FileChooser.ExtensionFilter txtFilter =
+                new FileChooser.ExtensionFilter("Текстовые файлы", "*.txt");
+        FileChooser.ExtensionFilter jsonFilter =
+                new FileChooser.ExtensionFilter("JSON файлы", "*.json");
+        FileChooser.ExtensionFilter binFilter =
+                new FileChooser.ExtensionFilter("Бинарные файлы", "*.bin");
+        fileChooser.getExtensionFilters().addAll(txtFilter, jsonFilter, binFilter);
 
         File file = fileChooser.showOpenDialog(mainStage);
         if (file != null) {
-            crud.setUsers(BinaryDataController.loadDataFromFile(file));
-            reloadTable();
-
+            String extension = file.getName().substring(1 + file.getName().lastIndexOf("."));
+            SerializeController serializeController = new TextDataController();
+//            System.out.println(extension);
+            for (SerializeController controller: serializers
+            ) {
+//                System.out.println(controller.ext);
+                if(extension.equalsIgnoreCase(controller.ext)){
+                    serializeController = controller;
+                    crud.setUsers(serializeController.loadDataFromFile(file));
+                    reloadTable();
+//                    System.out.println(Arrays.toString(crud.getUsers().toArray()));
+                    break;
+                }
+            }
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Information Dialog");
             alert.setHeaderText("Загрузка");
             alert.setContentText("Данные загружены из файла!");
-
-            alert.showAndWait();
-
-        }
-    }
-
-    @FXML
-    private void saveAsTextBtnClick(){
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Текстовые файлы", "*.txt");
-
-        fileChooser.getExtensionFilters().add(extFilter);
-
-        File file = fileChooser.showSaveDialog(mainStage);
-        if (file != null) {
-            TextDataController.saveDataToFile(crud.getUsers(), file);
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
-            alert.setHeaderText("Загрузка");
-            alert.setContentText("Данные сохранены в файл!");
             alert.showAndWait();
         }
-
     }
-
-    @FXML
-    private void openAsTextBtnClick(){
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Текстовые файлы", "*.txt");
-
-
-        fileChooser.getExtensionFilters().add(extFilter);
-
-        File file = fileChooser.showOpenDialog(mainStage);
-        if (file != null) {
-            crud.setUsers(TextDataController.loadDataFromFile(file));
-            reloadTable();
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
-            alert.setHeaderText("Загрузка");
-            alert.setContentText("Данные загружены из файла!");
-
-            alert.showAndWait();
-
-        }
-    }
-
-    @FXML
-    private void saveAsXMLBtnClick(){
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON файлы", "*.json");
-
-        fileChooser.getExtensionFilters().add(extFilter);
-
-        File file = fileChooser.showSaveDialog(mainStage);
-        if (file != null) {
-            JSONDataController.saveDataToFile(crud.getUsers(), file);
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
-            alert.setHeaderText("Загрузка");
-            alert.setContentText("Данные сохранены в файл!");
-            alert.showAndWait();
-        }
-
-    }
-
-    @FXML
-    private void openAsXMLBtnClick(){
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON файлы", "*.json");
-
-
-        fileChooser.getExtensionFilters().add(extFilter);
-
-        File file = fileChooser.showOpenDialog(mainStage);
-        if (file != null) {
-            crud.setUsers(JSONDataController.loadDataFromFile(file));
-            reloadTable();
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
-            alert.setHeaderText("Загрузка");
-            alert.setContentText("Данные загружены из файла!");
-
-            alert.showAndWait();
-
-        }
-
-    }
-
-
 
     @FXML
     private void showUserButtonClick() {
@@ -386,6 +346,7 @@ public class Controller extends Main {
     private final ObservableList<Perm> permissionsList = FXCollections.observableArrayList();
 
     public void initialize() {
+
         Task.initialiseTasks();
         transactionsTable.setItems(transactionData);
 
@@ -400,11 +361,8 @@ public class Controller extends Main {
         permissionColumn.setCellValueFactory(cellData -> cellData.getValue().permissionProperty());
 
         crud.hardInitialise();
-        for (User us : crud.getUsers()
-        ) {
-            userObservableList.add(us);
-        }
-        userObservableList.sort(Comparator.comparing(User::getName));
+        reloadTable();
+
     }
 
     public void reloadTable(){
@@ -413,6 +371,7 @@ public class Controller extends Main {
         ) {
             userObservableList.add(us);
         }
+        userObservableList.sort(Comparator.comparing(User::getName));
         usersTable.refresh();
     }
 
@@ -561,7 +520,7 @@ public class Controller extends Main {
 
         crud.addDeveloper((Developer) user);
         userObservableList.add(user);
-        userObservableList.sort(Comparator.comparing(User::getName));
+        reloadTable();
         return true;
     }
 
@@ -607,7 +566,7 @@ public class Controller extends Main {
 
         crud.addModerator((Moderator) user);
         userObservableList.add(user);
-        userObservableList.sort(Comparator.comparing(User::getName));
+        reloadTable();
         return true;
     }
 
@@ -623,12 +582,6 @@ public class Controller extends Main {
         userTypeDropBox.setValue(userTypeDropBox.getItems().get(1));
         salaryEdit.setText(String.valueOf(((Admin) user).getSalary()));
         rootAccessCheckBox.setSelected(((Admin) user).isRoot());
-        System.out.println(userName);
-        System.out.println(Arrays.toString(((Admin) user).getTaskIDs().toArray()));
-        System.out.println(Task.nightSky.getIndex());
-        System.out.println(Task.moonDance.getIndex());
-        System.out.println(Task.acade.getIndex());
-        System.out.println(Task.sunShine.getIndex());
         checkTaskCheckBox(nightSkyCheckBox, ((Admin) user).getTaskIDs(), Task.nightSky.getIndex());
         checkTaskCheckBox(moonDanceCheckBox, ((Admin) user).getTaskIDs(), Task.moonDance.getIndex());
         checkTaskCheckBox(acadeCheckBox, ((Admin) user).getTaskIDs(), Task.acade.getIndex());
@@ -674,7 +627,7 @@ public class Controller extends Main {
         }
         crud.addTechnicalAdmin((TechnicalAdmin) user);
         userObservableList.add(user);
-        userObservableList.sort(Comparator.comparing(User::getName));
+        reloadTable();
         return true;
     }
 

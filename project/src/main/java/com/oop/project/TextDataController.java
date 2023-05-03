@@ -5,9 +5,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class TextDataController {
+public class TextDataController extends SerializeController {
 
-    public static void saveDataToFile(ArrayList<User> users, File file) {
+    public TextDataController(){
+        ext = "txt";
+    }
+
+    @Override
+    public void saveDataToFile(ArrayList<User> users, File file) {
         try (FileWriter fileWriter = new FileWriter(file)) {
             for (User user : users) {
                 fileWriter.write(serialize(user));
@@ -66,7 +71,8 @@ public class TextDataController {
         return data;
     }
 
-    public static ArrayList<User> loadDataFromFile(File file) {
+    @Override
+    public ArrayList<User> loadDataFromFile(File file) {
         ArrayList<User> users = new ArrayList<>();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
             String line = "";
@@ -74,10 +80,13 @@ public class TextDataController {
                 line = bufferedReader.readLine();
                 if (line == null) break;
                 if (line.length() < 2) break;
+
+
                 String[] data = line.split(delimeter);
                 User user = UserFactory.createUser(data[0]); // userType
                 user.name = data[1]; //name
                 user.birth = LocalDate.parse(data[2]); //birth
+
                 switch (user.userType) {
                     case DEVELOPER -> {
                         String[] transactions = data[3].split(":"); //transactions
