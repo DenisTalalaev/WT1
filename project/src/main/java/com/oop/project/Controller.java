@@ -4,13 +4,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.CompletionService;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class Controller extends Main {
     enum Action {
@@ -22,7 +30,6 @@ public class Controller extends Main {
 
     private User userBuffer;
     private Action action;
-
 
     @FXML
     private Button showBtn;
@@ -192,114 +199,132 @@ public class Controller extends Main {
     @FXML
     private Label walletToLabel;
 
-    @FXML
-    private ScrollPane showPanel;
-
-    @FXML
-    private MenuItem saveAsBinaryBtn;
-
-    @FXML
-    private MenuItem saveAsXMLBtn;
-
-    @FXML
-    private MenuItem saveAsTextBtn;
-
-    @FXML
-    private MenuItem openAsBinaryBtn;
-
-    @FXML
-    private MenuItem openAsXMLBtn;
-
-    @FXML
-    private MenuItem openAsTextBtn;
-
 
     ArrayList<SerializeController> serializers = new ArrayList<>();
-
+    ArrayList<FileChooser.ExtensionFilter> filters = new ArrayList<>();
 
     @FXML
-    private void saveBtnClick(){
-
-        serializers.add(new BinaryDataController());
-        serializers.add(new TextDataController());
-        serializers.add(new JSONDataController());
-
-
-        FileChooser fileChooser = new FileChooser();
-
-        // Добавляем фильтры расширений файлов
-        FileChooser.ExtensionFilter txtFilter =
-                new FileChooser.ExtensionFilter("Текстовые файлы", "*.txt");
-        FileChooser.ExtensionFilter jsonFilter =
-                new FileChooser.ExtensionFilter("JSON файлы", "*.json");
-        FileChooser.ExtensionFilter binFilter =
-                new FileChooser.ExtensionFilter("Бинарные файлы", "*.bin");
-        fileChooser.getExtensionFilters().addAll(txtFilter, jsonFilter, binFilter);
-
-        File file = fileChooser.showSaveDialog(mainStage);
-        if (file != null) {
-            String extension = file.getName().substring(1 + file.getName().lastIndexOf("."));
-            SerializeController serializeController;
-            for (SerializeController controller: serializers
-                 ) {
-                if(extension.equalsIgnoreCase(controller.ext)){
-                    serializeController = controller;
-                    serializeController.saveDataToFile(crud.getUsers(), file);
-                    break;
-                }
-            }
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
-            alert.setHeaderText("Загрузка");
-            alert.setContentText("Данные сохранены в файл!");
-            alert.showAndWait();
-        }
+    private void saveBtnClick() {
+        Main.saveStage.show();
     }
 
 
     @FXML
-    private void loadFromFileBtnCLick(){
-
-        serializers.add(new BinaryDataController());
-        serializers.add(new TextDataController());
-        serializers.add(new JSONDataController());
-
-
+    private void loadFromFileBtnCLick() {
         FileChooser fileChooser = new FileChooser();
-
-        // Добавляем фильтры расширений файлов
-        FileChooser.ExtensionFilter txtFilter =
-                new FileChooser.ExtensionFilter("Текстовые файлы", "*.txt");
-        FileChooser.ExtensionFilter jsonFilter =
-                new FileChooser.ExtensionFilter("JSON файлы", "*.json");
-        FileChooser.ExtensionFilter binFilter =
-                new FileChooser.ExtensionFilter("Бинарные файлы", "*.bin");
-        fileChooser.getExtensionFilters().addAll(txtFilter, jsonFilter, binFilter);
-
+        filters.clear();
+        initOpenFilters();
+        fileChooser.getExtensionFilters().addAll(filters);
         File file = fileChooser.showOpenDialog(mainStage);
         if (file != null) {
-            String extension = file.getName().substring(1 + file.getName().lastIndexOf("."));
-            SerializeController serializeController = new TextDataController();
-//            System.out.println(extension);
-            for (SerializeController controller: serializers
-            ) {
-//                System.out.println(controller.ext);
-                if(extension.equalsIgnoreCase(controller.ext)){
-                    serializeController = controller;
-                    crud.setUsers(serializeController.loadDataFromFile(file));
-                    reloadTable();
-//                    System.out.println(Arrays.toString(crud.getUsers().toArray()));
-                    break;
-                }
-            }
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
-            alert.setHeaderText("Загрузка");
-            alert.setContentText("Данные загружены из файла!");
-            alert.showAndWait();
+            loadDataFromFile(file);
         }
     }
+
+    public byte[] readDataFromFile(File file) {
+        byte[] data = null;
+        try (FileInputStream fis = new FileInputStream(file)) {
+            data = new byte[(int) file.length()];
+            fis.read(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
+
+    private void loadDataFromFile(File file) {
+        String[] fileData = file.getName().split("\\.");
+        Plugin plugin = null;
+        String ext = "";
+        for (Plugin pl: plugins.values()
+             ) {
+            if(fileData[fileData.length-1].equalsIgnoreCase(pl.getExt().substring(2))){
+                plugin = pl;
+                break;
+            }
+        }
+        byte[] data = readDataFromFile(file);
+        if(plugin != null) {
+            data = plugin.decrypt(data);
+            ext = fileData[fileData.length-2];
+        } else {
+            ext = fileData[fileData.length-1];
+        }
+        SerializeController serializer = null;
+        for (SerializeController serializeController: serializers
+             ) {
+            if(ext.equalsIgnoreCase(serializeController.getExt().substring(1))){
+                serializer = serializeController;
+                break;
+            }
+        }
+        if(serializer != null) {
+            crud.setUsers(serializer.loadDataFromByteArray(data));
+            reloadTable();
+        }
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("Загрузка");
+        alert.setContentText("Данные загружены из файла!");
+        alert.showAndWait();
+    }
+
+    private void initOpenFilters() {
+        for (SerializeController serializeController: serializers
+             ) {
+            ArrayList<String> filt = new ArrayList<>();
+            filt.add("*" + serializeController.getExt());
+            for (Plugin pl: plugins.values()
+                 ) {
+                filt.add("*" + serializeController.getExt() + pl.getExt().substring(1));
+            }
+            filters.add(new FileChooser.ExtensionFilter(serializeController.getInfo(), filt.toArray(String[]::new)));
+        }
+    }
+
+
+    public static final HashMap<String, Plugin> plugins = new HashMap<>();
+
+    private void loadPlugins() {
+        File dir = new File("D:\\plugins");
+        try {
+            List<URL> urls = new ArrayList<>();
+            for (File file : Objects.requireNonNull(dir.listFiles())) {
+                urls.add(file.toURI().toURL());
+            }
+            URLClassLoader classLoader = new URLClassLoader(urls.toArray(new URL[0]));
+
+            for (File file : Objects.requireNonNull(dir.listFiles())) {
+                JarFile jarFile = new JarFile(file);
+                Enumeration<JarEntry> entries = jarFile.entries();
+                while (entries.hasMoreElements()) {
+                    JarEntry entry = entries.nextElement();
+                    if (entry.getName().endsWith(".class")) {
+                        String className = entry.getName().replace('/', '.').substring(0, entry.getName().length() - 6);
+                        Class<?> cl = classLoader.loadClass(className);
+                        if (Plugin.class.isAssignableFrom(cl)) {
+                            Plugin plugin = (Plugin) cl.getDeclaredConstructor().newInstance();
+                            plugins.put(plugin.getDescr(), plugin);
+                        }
+                    }
+                }
+                jarFile.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void initFilters() {
+        for (SerializeController controller : serializers) {
+            FileChooser.ExtensionFilter filter =
+                    new FileChooser.ExtensionFilter(controller.getInfo(), controller.getExtention());
+            filters.add(filter);
+        }
+    }
+
 
     @FXML
     private void showUserButtonClick() {
@@ -347,6 +372,14 @@ public class Controller extends Main {
 
     public void initialize() {
 
+        serializers.add(new BinaryDataController());
+        serializers.add(new TextDataController());
+        serializers.add(new JSONDataController());
+
+        loadPlugins();
+
+        initFilters();
+
         Task.initialiseTasks();
         transactionsTable.setItems(transactionData);
 
@@ -365,7 +398,8 @@ public class Controller extends Main {
 
     }
 
-    public void reloadTable(){
+
+    public void reloadTable() {
         userObservableList.clear();
         for (User us : crud.getUsers()
         ) {
@@ -877,6 +911,26 @@ public class Controller extends Main {
         createLoadUserHelper(user);
         action = Action.CREATE_USER;
         applyCancelButtonsVisible(true);
+    }
+
+
+    @FXML
+    protected void onDragDropDropped(DragEvent event){
+        if(event.getDragboard().hasFiles()){
+            List<File> files = event.getDragboard().getFiles();
+            if (files.size() > 0) {
+                File file = files.get(0);
+                loadDataFromFile(file);
+            }
+
+        }
+    }
+
+    @FXML
+    protected void onDragDropEntered(DragEvent event){
+        if(event.getDragboard().hasFiles()){
+            event.acceptTransferModes(TransferMode.ANY);
+        }
     }
 
 }

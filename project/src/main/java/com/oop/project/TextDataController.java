@@ -1,26 +1,41 @@
 package com.oop.project;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class TextDataController extends SerializeController {
 
-    public TextDataController(){
-        ext = "txt";
+    private String ext;
+    private String extention = "*.txt";
+    private String info = "Текстовые файлы";
+
+    public String getExtention() {
+        return extention;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public TextDataController() {
+        ext = ".txt";
     }
 
     @Override
-    public void saveDataToFile(ArrayList<User> users, File file) {
-        try (FileWriter fileWriter = new FileWriter(file)) {
-            for (User user : users) {
-                fileWriter.write(serialize(user));
-                fileWriter.write("\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    public String getExt() {
+        return ext;
+    }
+
+    @Override
+    public byte[] saveDataToByteArray(ArrayList<User> users) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (User user : users) {
+            stringBuilder.append(serialize(user) + "\n");
         }
+        return stringBuilder.toString().getBytes(StandardCharsets.UTF_8);
     }
 
     public static final String delimeter = "/--/";
@@ -72,15 +87,15 @@ public class TextDataController extends SerializeController {
     }
 
     @Override
-    public ArrayList<User> loadDataFromFile(File file) {
+    public ArrayList<User> loadDataFromByteArray(byte[] array) {
         ArrayList<User> users = new ArrayList<>();
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(array);
+             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(bais))) {
             String line = "";
             do {
                 line = bufferedReader.readLine();
                 if (line == null) break;
                 if (line.length() < 2) break;
-
 
                 String[] data = line.split(delimeter);
                 User user = UserFactory.createUser(data[0]); // userType

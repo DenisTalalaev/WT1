@@ -77,7 +77,6 @@ public class CRUD implements Serializable {
 
             users.add(moderator);
         }
-
     }
 
     //create

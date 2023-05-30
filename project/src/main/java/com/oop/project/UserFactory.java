@@ -26,10 +26,9 @@ public class UserFactory {
 
     public static User createUser(String value) {
         return switch (value) {
-            case "Developer", "DEVELOPER" -> createUser(UserType.DEVELOPER);
             case "Moderator", "MODERATOR" -> createUser(UserType.MODERATOR);
             case "TechnicalAdmin", "TECHNICAL_ADMIN" -> createUser(UserType.TECHNICAL_ADMIN);
-            default -> null;
+            default -> createUser(UserType.DEVELOPER);
         };
 
     }

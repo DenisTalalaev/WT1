@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="140.0" prefWidth="330.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.oop.project.SaveController">
+   <children>
+      <Label layoutX="66.0" layoutY="14.0" text="Выберите плагин для шифрования">
+         <font>
+            <Font name="Times New Roman" size="14.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="pluginDropBox" layoutX="66.0" layoutY="43.0" prefHeight="25.0" prefWidth="200.0" />
+      <Button layoutX="171.0" layoutY="85.0" mnemonicParsing="false" onAction="#acceptBtnClick" prefHeight="25.0" prefWidth="95.0" text="Подтвердить" />
+      <Button layoutX="66.0" layoutY="85.0" mnemonicParsing="false" onAction="#cancelBtnClick" prefHeight="25.0" prefWidth="95.0" text="Отмена" />
+   </children>
+</Pane>

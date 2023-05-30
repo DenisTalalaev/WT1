@@ -1,10 +1,11 @@
 package com.oop.project;
 
-import java.io.File;
 import java.util.ArrayList;
 
-public class SerializeController {
-    public String ext = "txt";
-    public void saveDataToFile(ArrayList<User> users, File file){}
-    public ArrayList<User> loadDataFromFile(File file){return null;}
+public abstract class SerializeController {
+    public abstract String getExt();
+    public abstract String getExtention();
+    public abstract String getInfo();
+    public abstract byte[] saveDataToByteArray(ArrayList<User> users);
+    public abstract ArrayList<User> loadDataFromByteArray(byte[] data);
 }
